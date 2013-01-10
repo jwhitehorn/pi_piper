@@ -5,14 +5,15 @@ pi_piper brings event driven programming to the Raspberry Pi's GPIO pins. To get
     sudo gem install pi_piper
 
 Sample usage:
+```ruby
+require 'pi_piper'
 
-    require 'pi_piper'
+PiPiper.watch :pin => 23 do |pin|
+  puts "Pin changed from #{pin.last_reading} to #{pin.reading}"
+end
 
-    PiPiper.watch :pin => 23 do |pin|
-      puts "Pin changed from #{pin.last_reading} to #{pin.reading}"
-    end
-
-    PiPiper.wait
+PiPiper.wait
+```
 
 Your block will be called when a change to the pin's state is detected.
 
