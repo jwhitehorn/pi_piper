@@ -1,7 +1,6 @@
 Manifest
 README.md
 Rakefile
-examples/morse_code/circuit.png
-examples/morse_code/morse_code.rb
 lib/pi_piper.rb
 lib/pi_piper/pin.rb
+pi_piper.gemspec

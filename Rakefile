@@ -7,7 +7,7 @@ Echoe.new('pi_piper', '1.0.2') do |p|
   p.url             = "http://github.com/jwhitehorn/pi_piper"  
   p.author          = "Jason Whitehorn"  
   p.email           = "jason.whitehorn@gmail.com"  
-  p.ignore_pattern  = ["examples/*"]  
+  p.ignore_pattern  = ["examples/**/*"]  
   p.development_dependencies = []  
 end  
   
