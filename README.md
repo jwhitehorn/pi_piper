@@ -26,6 +26,12 @@ sleep 1
 pin.off
 ```
 
+## Example projects
+
+Looking for more examples/sample code for Pi Piper? Then check out the following example projects, complete with circuit diagrams:
+
+* [Morse Code](https://github.com/jwhitehorn/pi_piper/wiki/Morse-Code)
+
 ## License
 
 Copyright (c) 2013, [Jason Whitehorn](https://github.com/jwhitehorn) 
