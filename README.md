@@ -17,6 +17,15 @@ PiPiper.wait
 
 Your block will be called when a change to the pin's state is detected.
 
+Additionally you can use pins as output too:
+
+```ruby
+pin = PiPiper::Pin.new(:pin => 17)
+pin.on
+sleep 1
+pin.off
+```
+
 ## License
 
 Copyright (c) 2013, [Jason Whitehorn](https://github.com/jwhitehorn) 
