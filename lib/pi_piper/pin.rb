@@ -13,7 +13,7 @@ module PiPiper
     end
     
     def on
-      File.open(filename, 'w') {|f| f.write("1") }
+      File.open(filename, 'w') {|f| f.write("1") } if direction == :out
     end
     
     def on?
@@ -21,7 +21,7 @@ module PiPiper
     end
     
     def off
-      File.open(filename, 'w') {|f| f.write("0") }
+      File.open(filename, 'w') {|f| f.write("0") } if direction == :out
     end
     
     def off?
