@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.description = "Event driven Raspberry Pi GPIO library"
   s.email = "jason.whitehorn@gmail.com"
   s.extra_rdoc_files = ["README.md", "lib/pi_piper.rb", "lib/pi_piper/pin.rb"]
-  s.files = ["Manifest", "README.md", "Rakefile", "examples/morse_code/circuit.png", "examples/morse_code/morse_code.rb", "lib/pi_piper.rb", "lib/pi_piper/pin.rb", "pi_piper.gemspec"]
+  s.files = ["Manifest", "README.md", "Rakefile", "lib/pi_piper.rb", "lib/pi_piper/pin.rb", "pi_piper.gemspec"]
   s.homepage = "http://github.com/jwhitehorn/pi_piper"
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Pi_piper", "--main", "README.md"]
   s.require_paths = ["lib"]
