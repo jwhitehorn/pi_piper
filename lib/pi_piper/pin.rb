@@ -1,9 +1,14 @@
 module PiPiper
   class Pin
-    attr_reader :pin, :last_value
+    attr_reader :pin, :last_value, :direction
     
     def initialize(options)
       @pin = options[:pin]
+      @direction = options[:direction].nil? ? :in : options[:direction]
+      
+      File.open("/sys/class/gpio/export", "w") { |f| f.write("#{@pin}") }
+      File.open("/sys/class/gpio/gpio#{pin}/direction", "w") { |f| f.write(@direction == :out ? "out" : "in") }
+      
       @last_value = value
     end
     
