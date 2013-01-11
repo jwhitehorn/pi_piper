@@ -1,10 +1,9 @@
 module PiPiper
   class Pin
-    attr_reader :pin, :mode
+    attr_reader :pin
     
-    def initialize(params)
-      @pin = params[:pin]
-      @mode = params[:mode]
+    def initialize(options)
+      @pin = options[:pin]
     end
     
     def on
