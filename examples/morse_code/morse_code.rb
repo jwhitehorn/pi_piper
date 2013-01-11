@@ -18,7 +18,7 @@ character_timing = { "a" => [dot, dash],             "b" => [dash, dot, dot, dot
                      "v" => [dot, dot, dot, dash],   "w" => [dot, dash, dash],       "x" => [dash, dot, dot, dash],
                      "y" => [dash, dot, dash, dash], "z" => [dash, dash, dot, dot]} 
 
-pin = PiPiper::Pin.new(:pin => 17)
+pin = PiPiper::Pin.new(:pin => 17, :direction => :out)
 pin.off
 
 loop do
