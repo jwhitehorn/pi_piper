@@ -1,10 +1,11 @@
 module PiPiper
   class Pin
-    attr_reader :pin, :last_value, :direction
+    attr_reader :pin, :last_value, :direction, :invert
     
     def initialize(options)
       @pin = options[:pin]
       @direction = options[:direction].nil? ? :in : options[:direction]
+      @invert = options[:invert].nil? ? false : options[:invert]
       
       File.open("/sys/class/gpio/export", "w") { |f| f.write("#{@pin}") }
       File.open("/sys/class/gpio/gpio#{pin}/direction", "w") { |f| f.write(@direction == :out ? "out" : "in") }
@@ -33,7 +34,8 @@ module PiPiper
     end
     
     def value
-      File.read(filename).to_i
+      val = File.read(filename).to_i
+      invert ? (val ^ 1) : val
     end
     
     private
