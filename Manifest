@@ -2,3 +2,4 @@ Manifest
 README.md
 Rakefile
 lib/pi_piper.rb
+lib/pi_piper/pin.rb

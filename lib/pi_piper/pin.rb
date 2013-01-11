@@ -1,9 +1,10 @@
 module PiPiper
   class Pin
-    attr_reader :pin
+    attr_reader :pin, :last_value
     
     def initialize(options)
       @pin = options[:pin]
+      @last_value = value
     end
     
     def on
@@ -20,6 +21,10 @@ module PiPiper
     
     def off?
       value == 0
+    end
+    
+    def changed?
+      last_value != value
     end
     
     def value
