@@ -4,10 +4,9 @@ module PiPiper
 
   def PiPiper.watch(options)
     Thread.new do
+      pin = PiPiper::Pin.new(options)
       loop do
-        sleep_time = 0.1 
-        pin = PiPiper::Pin.new(options)      
-        until pin.changed? do sleep sleep_time end
+        pin.wait_for_change 
         yield pin
       end 
     end.abort_on_exception = true  

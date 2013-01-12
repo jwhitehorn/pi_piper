@@ -6,7 +6,7 @@ module PiPiper
       @pin = options[:pin]
       @direction = options[:direction].nil? ? :in : options[:direction]
       @invert = options[:invert].nil? ? false : options[:invert]
-      
+     
       File.open("/sys/class/gpio/export", "w") { |f| f.write("#{@pin}") }
       File.open("/sys/class/gpio/gpio#{pin}/direction", "w") { |f| f.write(@direction == :out ? "out" : "in") }
       
@@ -31,6 +31,14 @@ module PiPiper
     
     def changed?
       last_value != value
+    end
+
+    def wait_for_change
+      fd = File.open("/sys/class/gpio/gpio17/value", "r")
+      File.open("/sys/class/gpio/gpio17/edge", "w") { |f| f.write("both") }
+      fd.read
+      IO.select(nil, nil, [fd], nil)
+      true
     end
     
     def value

@@ -8,7 +8,7 @@ Echoe.new('pi_piper', '1.1') do |p|
   p.author          = "Jason Whitehorn"  
   p.email           = "jason.whitehorn@gmail.com"  
   p.ignore_pattern  = ["examples/**/*"]  
-  p.development_dependencies = ['rb-inotify']  
+  p.development_dependencies = []  
 end  
   
 Dir["#{File.dirname(__FILE__)}/tasks/*.rake"].sort.each { |ext| load ext }  
