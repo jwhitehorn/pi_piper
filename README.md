@@ -30,7 +30,8 @@ pin.off
 
 Looking for more examples/sample code for Pi Piper? Then check out the following example projects, complete with circuit diagrams:
 
-* [Morse Code](https://github.com/jwhitehorn/pi_piper/wiki/Morse-Code)
+* [Project 1: Morse Code](https://github.com/jwhitehorn/pi_piper/wiki/Project-1:-Morse-Code)
+* [Project 2: Simple Switch](https://github.com/jwhitehorn/pi_piper/wiki/Project-2:-Simple-Switch)
 
 ## License
 
