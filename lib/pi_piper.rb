@@ -5,8 +5,8 @@ module PiPiper
   def PiPiper.watch(options)
     Thread.new do
       loop do
-        sleep_time = options[:poll] || 0.1 
-        pin = PiPiper::Pin.new(:pin => options[:pin])      
+        sleep_time = 0.1 
+        pin = PiPiper::Pin.new(options)      
         until pin.changed? do sleep sleep_time end
         yield pin
       end 
