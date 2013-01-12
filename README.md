@@ -1,6 +1,6 @@
 ## Overview
 
-pi_piper brings event driven programming to the Raspberry Pi's GPIO pins. To get started:
+Pi Piper brings event driven programming to the Raspberry Pi's GPIO pins. To get started:
 
     sudo gem install pi_piper
 
