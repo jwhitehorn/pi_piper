@@ -1,6 +1,6 @@
 module PiPiper
   class Pin
-    attr_reader :pin, :last_value, :direction, :invert
+    attr_reader :pin, :last_value, :value, :direction, :invert
     
     def initialize(options)
       @pin = options[:pin]
@@ -10,7 +10,7 @@ module PiPiper
       File.open("/sys/class/gpio/export", "w") { |f| f.write("#{@pin}") }
       File.open(direction_file, "w") { |f| f.write(@direction == :out ? "out" : "in") }
       
-      @last_value = value
+      read 
     end
     
     def on
@@ -36,14 +36,18 @@ module PiPiper
     def wait_for_change
       fd = File.open(value_file, "r")
       File.open(edge_file, "w") { |f| f.write("both") }
-      fd.read
-      IO.select(nil, nil, [fd], nil)
-      true
+      loop do
+        fd.read
+        IO.select(nil, nil, [fd], nil)
+        read 
+        break if changed?
+      end
     end
     
-    def value
+    def read 
+      @last_value = @value
       val = File.read(value_file).to_i
-      invert ? (val ^ 1) : val
+      @value = invert ? (val ^ 1) : val
     end
     
     private
