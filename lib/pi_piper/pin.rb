@@ -34,8 +34,8 @@ module PiPiper
     end
 
     def wait_for_change
-      fd = File.open("/sys/class/gpio/gpio17/value", "r")
-      File.open("/sys/class/gpio/gpio17/edge", "w") { |f| f.write("both") }
+      fd = File.open(filename, "r")
+      File.open("/sys/class/gpio/gpio#{pin}/edge", "w") { |f| f.write("both") }
       fd.read
       IO.select(nil, nil, [fd], nil)
       true
