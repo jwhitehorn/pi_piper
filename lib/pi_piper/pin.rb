@@ -30,6 +30,10 @@ module PiPiper
     def off?
       value == 0
     end
+
+    def update_value(new_value)
+      new_value ? on : off
+    end
     
     def changed?
       last_value != value
