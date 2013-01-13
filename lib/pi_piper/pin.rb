@@ -6,6 +6,7 @@ module PiPiper
       @pin = options[:pin]
       @direction = options[:direction].nil? ? :in : options[:direction]
       @invert = options[:invert].nil? ? false : options[:invert]
+      @trigger = options[:trigger].nil? ? :both : options[:trigger]
      
       File.open("/sys/class/gpio/export", "w") { |f| f.write("#{@pin}") }
       File.open(direction_file, "w") { |f| f.write(@direction == :out ? "out" : "in") }
@@ -40,7 +41,11 @@ module PiPiper
         fd.read
         IO.select(nil, nil, [fd], nil)
         read 
-        break if changed?
+        if changed?
+          next if @trigger == :rising and value == 0
+          next if @trigger == :failling and value == 1
+          break
+        end
       end
     end
     
