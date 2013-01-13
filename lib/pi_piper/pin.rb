@@ -3,10 +3,11 @@ module PiPiper
     attr_reader :pin, :last_value, :value, :direction, :invert
     
     def initialize(options)
+      options = {:direction => :in, :invert => false, :trigger => :both}.merge options
       @pin = options[:pin]
-      @direction = options[:direction].nil? ? :in : options[:direction]
-      @invert = options[:invert].nil? ? false : options[:invert]
-      @trigger = options[:trigger].nil? ? :both : options[:trigger]
+      @direction = options[:direction]
+      @invert = options[:invert]
+      @trigger = options[:trigger]
      
       File.open("/sys/class/gpio/export", "w") { |f| f.write("#{@pin}") }
       File.open(direction_file, "w") { |f| f.write(@direction == :out ? "out" : "in") }
