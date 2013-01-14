@@ -8,6 +8,9 @@ module PiPiper
       @direction = options[:direction]
       @invert = options[:invert]
       @trigger = options[:trigger]
+      
+      raise "Invalid direction. Options are :in or :out" unless [:in, :out].include? @direction
+      raise "Invalid trigger. Options are :rising, :falling, or :both" unless [:rising, :falling, :both].include? @trigger
      
       File.open("/sys/class/gpio/export", "w") { |f| f.write("#{@pin}") }
       File.open(direction_file, "w") { |f| f.write(@direction == :out ? "out" : "in") }
@@ -48,7 +51,7 @@ module PiPiper
         read 
         if changed?
           next if @trigger == :rising and value == 0
-          next if @trigger == :failling and value == 1
+          next if @trigger == :falling and value == 1
           break
         end
       end
