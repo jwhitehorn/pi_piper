@@ -20,7 +20,7 @@ module PiPiper
     end
     
     def on?
-      value == 1
+      not off?
     end
     
     def off
