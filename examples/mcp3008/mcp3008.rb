@@ -42,6 +42,14 @@ adc_pin = 0
 
 loop do
   value = read_adc(adc_pin, clock, adc_in, adc_out, cs)
-  puts "Value = #{value}"
+  invert = 1023 - value
+  mvolts = invert * (3300.0 / 1023.0)
+  if mvolts < 2700
+    temp = (mvolts - 380.0) / (2320.0 / 84.0)
+  else
+    temp = (mvolts - 2700.0) / (390.0 / 92.0) + 84.0
+  end
+  temp_f = (temp * 9.0 / 5.0) + 32
+  puts "Value = #{value}, invert = #{invert}, mvolts = #{mvolts}, temp = #{temp} C | #{temp_f} F"
   sleep 1
 end
