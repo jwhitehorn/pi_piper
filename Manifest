@@ -2,5 +2,6 @@ Manifest
 README.md
 Rakefile
 lib/pi_piper.rb
+lib/pi_piper/bcm2835.rb
 lib/pi_piper/pin.rb
-pi_piper.gemspec
+lib/pi_piper/spi.rb
