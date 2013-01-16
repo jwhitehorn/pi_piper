@@ -4,7 +4,7 @@ Pi Piper brings event driven programming to the Raspberry Pi's GPIO pins. To get
 
     sudo gem install pi_piper
 
-Sample usage:
+### GPIO
 ```ruby
 require 'pi_piper'
 
@@ -25,6 +25,31 @@ pin.on
 sleep 1
 pin.off
 ```
+
+### SPI
+Starting with version 1.2, PiPiper offers SPI support. Before utilizing SPI, ensure that you have Mike McCauley's [bcm2835 library](http://www.open.com.au/mikem/bcm2835/index.html) installed:
+
+    ls /usr/local/lib/libbcm2835.so
+
+If that file is not present, and you try to utilize the PiPiper::Spi class, you will receive an error similar to:
+
+    LoadError: Could not open library '/usr/local/lib/libbcm2835.so': /usr/local/lib/libbcm2835.so: cannot open shared object file: No such file or directory
+      from /var/lib/gems/1.9.1/gems/ffi-1.3.1/lib/ffi/library.rb:123:in `block in ffi_lib'
+      from /var/lib/gems/1.9.1/gems/ffi-1.3.1/lib/ffi/library.rb:90:in `map'
+      from /var/lib/gems/1.9.1/gems/ffi-1.3.1/lib/ffi/library.rb:90:in `ffi_lib'
+      from /var/lib/gems/1.9.1/gems/pi_piper-1.2/lib/pi_piper/bcm2835.rb:6:in `<module:Bcm2835>'
+      from /var/lib/gems/1.9.1/gems/pi_piper-1.2/lib/pi_piper/bcm2835.rb:4:in `<module:PiPiper>'
+      from /var/lib/gems/1.9.1/gems/pi_piper-1.2/lib/pi_piper/bcm2835.rb:3:in `<top (required)>'
+      from /usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require'
+      from /usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require'
+      from /var/lib/gems/1.9.1/gems/pi_piper-1.2/lib/pi_piper/spi.rb:261:in `initialize'
+      from (irb):2:in `new'
+      from (irb):2
+      from /usr/bin/irb:12:in `<main>'
+
+For those uninterested in SPI support, the bcm2835 is a "soft" requirement and is lazy loaded. If you never intended to use PiPiper::Spi, you shouldn't have to worry about this requirement.
+
+
 
 ## Example projects
 
