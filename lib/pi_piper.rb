@@ -1,4 +1,4 @@
-Dir[File.dirname(__FILE__) + '/pi_piper/*.rb'].each {|file| require file }
+Dir[File.dirname(__FILE__) + '/pi_piper/*.rb'].each {|file| require file unless file.end_with?('bcm2835.rb') }
 
 module PiPiper
 

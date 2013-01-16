@@ -90,7 +90,7 @@ module PiPiper
     # @param [optional, CHIP_SELECT_*] chip defaults to CHIP_SELECT_0
     # @return [SPI] 
     def self.begin(chip=nil)
-      Native.spi_begin
+      Bcm2835.spi_begin
       chip = CHIP_SELECT_0 if !chip && block_given?
       spi = new(chip)
 
@@ -109,7 +109,7 @@ module PiPiper
     #
     # Not needed when #begin is called with a block
     def self.end
-      Native.spi_end
+      Bcm2835.spi_end
     end
 
     # Configure the clock prescaler
@@ -121,7 +121,7 @@ module PiPiper
     #
     # @param [CLOCK_DIVIDER_*] divider the value to prescale the clock by
     def clock(divider)
-      Native.spi_clock(divider)
+      Bcm2835.spi_clock(divider)
     end
 
     # Configure the order that bits are sent and received from the bus
@@ -146,7 +146,7 @@ module PiPiper
         end
       end
 
-      Native.spi_bit_order(order)
+      Bcm2835.spi_bit_order(order)
     end
 
     # Activate a specific chip so that communication can begin
@@ -169,12 +169,12 @@ module PiPiper
     # @param [optional, CHIP_SELECT_*] chip the chip select line options
     def chip_select(chip=CHIP_SELECT_0)
       chip = @chip if @chip 
-      Native.spi_chip_select(chip) 
+      Bcm2835.spi_chip_select(chip) 
       if block_given?
         begin
           yield
         ensure
-          Native.spi_chip_select(CHIP_SELECT_NONE)
+          Bcm2835.spi_chip_select(CHIP_SELECT_NONE)
         end
       end
     end
@@ -193,7 +193,7 @@ module PiPiper
       chip = @chip if @chip
       chip = CHIP_SELECT_0 unless chip
 
-      Native.spi_chip_select_polarity(chip, active_low ? Native::LOW : Native::HIGH)
+      Bcm2835.spi_chip_select_polarity(chip, active_low ? 0 : 1)
     end
 
     # Read from the bus
@@ -213,7 +213,7 @@ module PiPiper
       if count
         write([0xFF] * count)
       else
-        enable { Native.spi_transfer(0) }
+        enable { Bcm2835.spi_transfer(0) }
       end
     end
 
@@ -245,11 +245,11 @@ module PiPiper
       enable do
         case data
         when Numeric
-          Native.spi_transfer(data)
+          Bcm2835.spi_transfer(data)
         when String
-          data.each_byte.map {|byte| Native.spi_transfer(byte).chr }.join 
+          data.each_byte.map {|byte| Bcm2835.spi_transfer(byte).chr }.join 
         when Enumerable
-          data.map {|byte| Native.spi_transfer(byte) }
+          data.map {|byte| Bcm2835.spi_transfer(byte) }
         else
           raise ArgumentError.new("#{data.class} is not valid data. User Numeric, String or an Enumerable of numbers")
         end
@@ -258,6 +258,7 @@ module PiPiper
 
   private
     def initialize(chip)
+      require File.dirname(__FILE__) + '/bcm2835.rb'
       @chip = chip
     end
 
