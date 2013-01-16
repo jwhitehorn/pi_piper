@@ -50,4 +50,4 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 ***
 <img src="http://www.raspberrypi.org/wp-content/uploads/2012/03/Raspi_Colour_R.png" width="90" />
 
-Proudly developed exclusively on a Raspberry Pi
+Proudly developed exclusively on a [Raspberry Pi](http://www.raspberrypi.org)
