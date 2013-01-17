@@ -258,7 +258,6 @@ module PiPiper
 
   private
     def initialize(chip)
-      require File.dirname(__FILE__) + '/bcm2835.rb'
       @chip = chip
     end
 
