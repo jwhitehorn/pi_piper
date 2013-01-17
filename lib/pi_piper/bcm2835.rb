@@ -3,7 +3,7 @@ require 'ffi'
 module PiPiper
   module Bcm2835
     extend FFI::Library
-    ffi_lib '/usr/local/lib/libbcm2835.so'
+    ffi_lib File.dirname(__FILE__) + '/libbcm2835.img'
 
     attach_function :spi_begin,       :bcm2835_spi_begin,            [], :uint8
     attach_function :spi_end,         :bcm2835_spi_end,              [], :uint8
