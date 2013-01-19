@@ -35,7 +35,7 @@ module PiPiper
     end
 
     def update_value(new_value)
-      !new_valuei || new_value == 0 ? off : on
+      !new_value || new_value == 0 ? off : on
     end
     
     def changed?
