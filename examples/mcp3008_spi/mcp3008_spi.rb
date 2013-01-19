@@ -1,12 +1,13 @@
 require 'pi_piper'
+#special thanks to Jeremy Blythe, and his article @ http://jeremyblythe.blogspot.com/2012/09/raspberry-pi-hardware-spi-analog-inputs.html
+#it greatly helped in getting the MCP3008 setup with SPI
 
-adc_num =0 
+adc_num = 0 
 
 loop do
   value = 0
   PiPiper::Spi.begin do |spi|
-    #spi.clock(PiPiper::Spi::CLOCK_DIVIDER_512)
-    raw = spi.write [1, 128, 0] 
+    raw = spi.write [1, (8+adc_num)<<4, 0] 
     value = ((raw[1]&3) << 8) + raw[2]
   end
 
