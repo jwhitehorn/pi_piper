@@ -69,26 +69,6 @@ module PiPiper
     # No CS, control it yourself
     CHIP_SELECT_NONE = 3
 
-    # Initializes SPI, must be called before SPI can be used
-    #
-    # @example With a block
-    #   SPI.begin do |spi| 
-    #     spi.write 1
-    #   end
-    #
-    # @example Without a block
-    #   spi = SPI.begin
-    #   spi.write 1
-    #   spi.end # must call end yourself
-    #
-    # @example Specifying the chip select line
-    #   SPI.begin(SPI::CHIP_SELECT_1) do |spi|
-    #     spi.write 1
-    #   end
-    #
-    # @yield [SPI] 
-    # @param [optional, CHIP_SELECT_*] chip defaults to CHIP_SELECT_0
-    # @return [SPI] 
     def self.begin(chip=nil)
       Bcm2835.spi_begin
       chip = CHIP_SELECT_0 if !chip && block_given?
@@ -105,38 +85,15 @@ module PiPiper
       end
     end
 
-    # Manually shut down SPI
-    #
     # Not needed when #begin is called with a block
     def self.end
       Bcm2835.spi_end
     end
 
-    # Configure the clock prescaler
-    # 
-    # Default is CLOCK_DIVIDER_65536 (4kHz)
-    #
-    # @example Run SPI at 2MHz
-    #   spi.clock(SPI::CLOCK_DIVIDER_128)
-    #
-    # @param [CLOCK_DIVIDER_*] divider the value to prescale the clock by
     def clock(divider)
       Bcm2835.spi_clock(divider)
     end
 
-    # Configure the order that bits are sent and received from the bus
-    #
-    # @example Most signifigant bit first
-    #   spi.bit_order(7..0)
-    #   # or
-    #   spi.bit_order(SPI::MSBFIRST)
-    #
-    # @example Least signifigant bit first
-    #   spi.bit_order(0..7)
-    #   # or
-    #   spi.bit_order(SPI::LSBFIRST)
-    #
-    # @param [Range|LSBFIRST|MSBFIRST] order
     def bit_order(order=MSBFIRST)
       if order.is_a?(Range)  
         if order.begin < order.end
@@ -225,12 +182,6 @@ module PiPiper
     # @example Write multiple bytes
     #   spi.write(0x22, 0x33, 0x44)
     #
-    # @example Write a string
-    #   spi.write("Hello SPI!")
-    #
-    # @example Write any enumerable
-    #   spi.write(30..40)
-    #
     # @return [Number|Array|String] data that came out of MISO during write
     def write(*args)
       case args.count
@@ -246,12 +197,10 @@ module PiPiper
         case data
         when Numeric
           Bcm2835.spi_transfer(data)
-        when String
-          data.each_byte.map {|byte| Bcm2835.spi_transfer(byte).chr }.join 
         when Enumerable
           Bcm2835.spi_transfer_bytes(data)
         else
-          raise ArgumentError.new("#{data.class} is not valid data. User Numeric, String or an Enumerable of numbers")
+          raise ArgumentError.new("#{data.class} is not valid data. Use Numeric or an Enumerable of numbers")
         end
       end
     end
