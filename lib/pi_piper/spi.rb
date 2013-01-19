@@ -249,7 +249,7 @@ module PiPiper
         when String
           data.each_byte.map {|byte| Bcm2835.spi_transfer(byte).chr }.join 
         when Enumerable
-          data.map {|byte| Bcm2835.spi_transfer(byte) }
+          Bcm2835.spi_transfer_bytes(data)
         else
           raise ArgumentError.new("#{data.class} is not valid data. User Numeric, String or an Enumerable of numbers")
         end

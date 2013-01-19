@@ -5,8 +5,8 @@ adc_num =0
 loop do
   value = 0
   PiPiper::Spi.begin do |spi|
-    spi.clock(PiPiper::Spi::CLOCK_DIVIDER_512)
-    raw = spi.write 0x1, 0x80, 0x0
+    #spi.clock(PiPiper::Spi::CLOCK_DIVIDER_512)
+    raw = spi.write [1, 128, 0] 
     value = ((raw[1]&3) << 8) + raw[2]
   end
 
