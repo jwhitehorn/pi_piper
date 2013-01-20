@@ -69,6 +69,14 @@ module PiPiper
     # No CS, control it yourself
     CHIP_SELECT_NONE = 3
 
+    def self.set_mode(cpol, cpha)
+      mode = SPI_MODE0 #default
+      mode = SPI_MODE1 if cpol == 0 and cpha == 1
+      mode = SPI_MODE2 if cpol == 1 and cpha == 0
+      mode = SPI_MODE3 if cpol == 1 and cpha == 1
+      Bcma2835.spi_set_data_mode mode
+    end
+
     def self.begin(chip=nil)
       Bcm2835.spi_begin
       chip = CHIP_SELECT_0 if !chip && block_given?
