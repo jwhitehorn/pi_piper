@@ -26,11 +26,12 @@ numbers = [zero, one, two, three, four, five, six, seven, eight, nine]
 
 pins.each { |p| p.off }
 
-loop do
-  (0..1000).each do
+PiPiper.watch :pin => 4, :trigger => :rising do
+  (0..250).each do
     pins.each { |p| p.update_value(Random.rand(2) == 1) }
   end
   number = Random.rand(10)
   numbers[number].call
-  sleep 2
 end
+
+PiPiper.wait
