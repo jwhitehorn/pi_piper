@@ -15,6 +15,7 @@ module PiPiper
     attach_function :spi_clock,       :bcm2835_spi_setClockDivider,  [:uint8], :void
     attach_function :spi_bit_order,   :bcm2835_spi_setBitOrder,      [:uint8], :void
     attach_function :spi_chip_select, :bcm2835_spi_chipSelect,       [:uint8], :void
+    attach_function :spi_set_data_mode, :bcm2835_spi_setDataMode,    [:uint8], :void
     attach_function :spi_chip_select_polarity, 
                     :bcm2835_spi_setChipSelectPolarity,              [:uint8, :uint8], :void
 
