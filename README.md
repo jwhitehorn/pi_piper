@@ -27,7 +27,7 @@ pin.off
 ```
 
 ### SPI
-Starting with version 1.2, PiPiper offers SPI support. 
+Starting with version 1.2, Pi Piper offers SPI support. 
 
 ```ruby
 PiPiper::Spi.begin do |spi|
