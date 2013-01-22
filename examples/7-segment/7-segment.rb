@@ -1,12 +1,12 @@
 require 'pi_piper'
 
-s7 = PiPiper::Pin.new(:direction => :out, :pin => 17)
+s1 = PiPiper::Pin.new(:direction => :out, :pin => 27)
+s2 = PiPiper::Pin.new(:direction => :out, :pin => 24)
+s3 = PiPiper::Pin.new(:direction => :out, :pin => 23)
+s4 = PiPiper::Pin.new(:direction => :out, :pin => 25)
 s5 = PiPiper::Pin.new(:direction => :out, :pin => 18)
 s6 = PiPiper::Pin.new(:direction => :out, :pin => 22)
-s3 = PiPiper::Pin.new(:direction => :out, :pin => 23)
-s2 = PiPiper::Pin.new(:direction => :out, :pin => 24)
-s4 = PiPiper::Pin.new(:direction => :out, :pin => 25)
-s1 = PiPiper::Pin.new(:direction => :out, :pin => 27)
+s7 = PiPiper::Pin.new(:direction => :out, :pin => 17)
 
 
 pins = [s1, s2, s3, s4, s5, s6, s7]
