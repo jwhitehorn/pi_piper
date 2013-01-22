@@ -2,6 +2,13 @@ module PiPiper
   class Pin
     attr_reader :pin, :last_value, :value, :direction, :invert
     
+    #Initializes a new GPIO pin.
+    #
+    # @param [Hash] options A hash of options
+    # @option options [Fixnum] :pin The pin number to initialize. Required.
+    # @option options [Symbol] :direction The direction of communication, either :in or :out. Defaults to :in.
+    # @option options [Boolean] :invert Indicates if the value read from the physical pin should be inverted. Defaults to false.
+    # @option options [Symbol] :trigger Indicates when the wait_for_change method will detect a change, either :rising, :falling, or :both edge triggers. Defaults to :both.
     def initialize(options)
       options = {:direction => :in, :invert => false, :trigger => :both}.merge options
       @pin = options[:pin]
