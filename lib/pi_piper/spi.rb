@@ -27,10 +27,6 @@
 #WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-
-
-
-
 module PiPiper
   class Spi
     # 65536 = 256us = 4kHz
