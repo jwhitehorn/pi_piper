@@ -1,6 +1,8 @@
 require 'ffi'
 
 module PiPiper
+  # The Bcm2835 module is not intended to be directly called.
+  # It serves as an FFI library for PiPiper::SPI.
   module Bcm2835
     extend FFI::Library
     ffi_lib File.dirname(__FILE__) + '/libbcm2835.img'
