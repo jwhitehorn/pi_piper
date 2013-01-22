@@ -36,6 +36,9 @@ PiPiper::Spi.begin do |spi|
 end
 ```
 
+## Documentation
+
+API documentation for Pi Piper can be found at [rdoc.info](http://rdoc.info/github/jwhitehorn/pi_piper/frames/).
 
 ## Example projects
 
