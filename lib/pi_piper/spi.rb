@@ -32,6 +32,7 @@
 
 
 module PiPiper
+  # class for SPI interfaces on the Raspberry Pi
   class Spi
     # 65536 = 256us = 4kHz
     CLOCK_DIVIDER_65536 = 0
@@ -74,6 +75,7 @@ module PiPiper
     # No CS, control it yourself
     CHIP_SELECT_NONE = 3
 
+    #Sets the SPI mode. Defaults to mode (0,0).
     def self.set_mode(cpol, cpha)
       mode = SPI_MODE0 #default
       mode = SPI_MODE1 if cpol == 0 and cpha == 1
@@ -82,6 +84,7 @@ module PiPiper
       Bcma2835.spi_set_data_mode mode
     end
 
+    #Begin an SPI block. All SPI communications should be wrapped in a block.
     def self.begin(chip=nil)
       Bcm2835.spi_begin
       chip = CHIP_SELECT_0 if !chip && block_given?
