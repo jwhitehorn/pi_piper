@@ -198,7 +198,7 @@ module PiPiper
     # @example Write multiple bytes
     #   spi.write(0x22, 0x33, 0x44)
     #
-    # @return [Number|Array|String] data that came out of MISO during write
+    # @return [Number|Array] data that came out of MISO during write
     def write(*args)
       case args.count
         when 0
