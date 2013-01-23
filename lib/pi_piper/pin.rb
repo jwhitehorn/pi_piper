@@ -1,4 +1,5 @@
 module PiPiper
+  # Represents a GPIO pin on the Raspberry Pi
   class Pin
     attr_reader :pin, :last_value, :value, :direction, :invert
     
@@ -25,30 +26,38 @@ module PiPiper
       read 
     end
     
+    # If the pin has been initialized for output this method will set the logic level high.
     def on
       File.open(value_file, 'w') {|f| f.write("1") } if direction == :out
     end
     
+    # Tests if the logic level is high.
     def on?
       not off?
     end
     
+    # If the pin has been initialized for output this method will set the logic level low.
     def off
       File.open(value_file, 'w') {|f| f.write("0") } if direction == :out
     end
     
+    # Tests if the logic level is low.
     def off?
       value == 0
     end
 
+    # If the pin has been initialized for output this method will either raise or lower the logic level depending on `new_value`.
+    # @param [Object] new_value If false or 0 the pin will be set to off, otherwise on.
     def update_value(new_value)
       !new_value || new_value == 0 ? off : on
     end
     
+    # Tests if the logic level has changed since the pin was last read.
     def changed?
       last_value != value
     end
 
+    # blocks until a logic level change occurs. The initializer option `:trigger` modifies what edge this method will release on.
     def wait_for_change
       fd = File.open(value_file, "r")
       File.open(edge_file, "w") { |f| f.write("both") }
@@ -63,7 +72,9 @@ module PiPiper
         end
       end
     end
-    
+
+    # Reads the current value from the pin. Without calling this method first, `value`, `last_value` and `changed?` will not be updated. 
+    # In short, you must call this method if you are curious about the current state of the pin.
     def read 
       @last_value = @value
       val = File.read(value_file).to_i
