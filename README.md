@@ -31,8 +31,7 @@ Starting with version 1.2, Pi Piper offers SPI support.
 
 ```ruby
 PiPiper::Spi.begin do |spi|
-  raw = spi.write [1, (8+adc_num)<<4, 0] 
-  value = ((raw[1]&3) << 8) + raw[2]
+  puts spi.write [0x01, 0x80, 0x00] 
 end
 ```
 
