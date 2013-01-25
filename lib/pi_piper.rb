@@ -12,9 +12,9 @@ module PiPiper
   # options:
   #   Options hash. Options include `:pin`, `:invert` and `:trigger`.
   # 
-  def PiPiper.watch(options)
+  def PiPiper.watch(options, &block)
     Thread.new do
-      pin = PiPiper::Pin.new(options, &block)
+      pin = PiPiper::Pin.new(options)
       loop do
         pin.wait_for_change 
         pin.instance_eval { block.call pin } 
