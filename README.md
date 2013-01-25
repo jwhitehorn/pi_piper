@@ -1,10 +1,24 @@
 ## Overview
 
-Pi Piper brings event driven programming to the Raspberry Pi's GPIO pins. To get started:
+Pi Piper brings event driven programming to the Raspberry Pi's GPIO pins. Pi Piper works with all revisions of the Raspberry Pi, 
+and has been tested with Ruby 1.9.3 under both [Raspbian "wheezy"](http://www.raspberrypi.org/downloads) and [Occidentalis v0.2](http://learn.adafruit.com/adafruit-raspberry-pi-educational-linux-distro/occidentalis-v0-dot-2).
+
+To get started:
+
+If you do not already have Ruby installed, first you'll need to:
+    
+    sudo apt-get install ruby ruby1.9.1-dev
+    
+Despite one of the packages being titled "ruby1.9.1-dev", the above command will install Ruby 1.9.3 (as of January 2013) and the Ruby dev tools.
+
+To install Pi Piper:
 
     sudo gem install pi_piper
 
 ### GPIO
+
+The GPIO pins (or General Purpose I/O pins) are the primary "do anything" pins on the Raspberry Pi. Reading inputs from them is as simple as:
+
 ```ruby
 require 'pi_piper'
 
