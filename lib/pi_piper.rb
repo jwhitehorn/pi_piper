@@ -14,10 +14,11 @@ module PiPiper
   # 
   def PiPiper.watch(options)
     Thread.new do
-      pin = PiPiper::Pin.new(options)
+      pin = PiPiper::Pin.new(options, &block)
       loop do
         pin.wait_for_change 
-        yield pin
+        pin.instance_eval { block.call pin } 
+        #yield pin
       end 
     end.abort_on_exception = true  
   end
