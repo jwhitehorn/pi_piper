@@ -19,9 +19,9 @@ module PiPiper
       loop do
         pin.wait_for_change 
         if block.arity > 0
-          pin.instance_exec &block
-        else
           block.call pin
+        else
+          pin.instance_exec &block
         end
       end 
     end.abort_on_exception = true  
