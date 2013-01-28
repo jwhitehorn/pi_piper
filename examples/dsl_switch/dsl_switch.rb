@@ -7,5 +7,9 @@ watch :pin => 17, :invert => true do
   puts "Pin changed from #{last_value} to #{value}"
 end
 
+after :pin => 17, :goes => :high do
+  puts "ouch!" 
+end
+
 PiPiper.wait
 

@@ -27,6 +27,11 @@ module PiPiper
     end.abort_on_exception = true  
   end
 
+  def after(options, &block)
+    options[:trigger] = options.delete(:goes) == :high ? :rising : :falling
+    watch options, &block
+  end
+
   #Prevents the main thread from exiting. Required when using PiPiper.watch
   def wait
     loop do sleep 1 end
