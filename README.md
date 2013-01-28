@@ -30,7 +30,7 @@ end
 #Or
 
 after :pin => 23, :goes => :high do
-  puts "Pin is on"
+  puts "Button pressed"
 end
 
 PiPiper.wait
