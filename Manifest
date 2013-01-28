@@ -6,4 +6,3 @@ lib/pi_piper/bcm2835.rb
 lib/pi_piper/libbcm2835.img
 lib/pi_piper/pin.rb
 lib/pi_piper/spi.rb
-pi_piper.gemspec

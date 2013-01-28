@@ -21,9 +21,10 @@ The GPIO pins (or General Purpose I/O pins) are the primary "do anything" pins o
 
 ```ruby
 require 'pi_piper'
+include PiPiper
 
-PiPiper.watch :pin => 23 do |pin|
-  puts "Pin changed from #{pin.last_value} to #{pin.value}"
+watch :pin => 23 do
+  puts "Pin changed from #{last_value} to #{value}"
 end
 
 PiPiper.wait
