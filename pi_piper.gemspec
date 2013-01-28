@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jason Whitehorn"]
-  s.date = "2013-01-25"
+  s.date = "2013-01-28"
   s.description = "Event driven Raspberry Pi GPIO library"
   s.email = "jason.whitehorn@gmail.com"
   s.extra_rdoc_files = ["README.md", "lib/pi_piper.rb", "lib/pi_piper/bcm2835.rb", "lib/pi_piper/libbcm2835.img", "lib/pi_piper/pin.rb", "lib/pi_piper/spi.rb"]
