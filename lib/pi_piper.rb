@@ -26,7 +26,12 @@ module PiPiper
       end 
     end.abort_on_exception = true  
   end
-
+  
+  #Defines an event block to be executed after a pin either goes high or low.
+  #
+  # @param [Hash] options A hash of options
+  # @option options [Fixnum] :pin The pin number to initialize. Required.
+  # @option options [Symbol] :goes The event to watch for. Either :high or :low. Required.
   def after(options, &block)
     options[:trigger] = options.delete(:goes) == :high ? :rising : :falling
     watch options, &block

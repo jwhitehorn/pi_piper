@@ -7,9 +7,10 @@ Pi Piper brings event driven programming to the Raspberry Pi's GPIO pins. To get
 ### GPIO
 ```ruby
 require 'pi_piper'
+include PiPiper
 
-PiPiper.watch :pin => 23 do |pin|
-  puts "Pin changed from #{pin.last_value} to #{pin.value}"
+watch :pin => 23 do
+  puts "Pin changed from #{last_value} to #{value}"
 end
 
 PiPiper.wait
