@@ -85,19 +85,15 @@ module PiPiper
     end
 
     #Begin an SPI block. All SPI communications should be wrapped in a block.
-    def self.begin(chip=nil)
+    def self.begin(chip=nil, &block)
       Bcm2835.spi_begin
       chip = CHIP_SELECT_0 if !chip && block_given?
       spi = new(chip)
 
-      if block_given?
-        begin
-          yield(spi)
-        ensure
-          self.end
-        end
-      else
-        spi
+      if block.arity > 0
+        block.call spi
+      else  
+        spi.instance_exec &block
       end
     end
 
