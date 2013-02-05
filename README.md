@@ -51,8 +51,8 @@ pin.off
 Starting with version 1.2, Pi Piper offers SPI support. 
 
 ```ruby
-PiPiper::Spi.begin do |spi|
-  puts spi.write [0x01, 0x80, 0x00] 
+PiPiper::Spi.begin do 
+  puts write [0x01, 0x80, 0x00] 
 end
 ```
 
