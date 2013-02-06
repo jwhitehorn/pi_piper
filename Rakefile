@@ -2,7 +2,7 @@ require 'rubygems'
 require 'rake'  
 require 'echoe'  
   
-Echoe.new('pi_piper', '1.3.1') do |p|  
+Echoe.new('pi_piper', '1.3.2') do |p|  
   p.description     = "Event driven Raspberry Pi GPIO library"  
   p.url             = "http://github.com/jwhitehorn/pi_piper"  
   p.author          = "Jason Whitehorn"  
