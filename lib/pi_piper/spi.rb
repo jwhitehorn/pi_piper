@@ -34,33 +34,6 @@
 module PiPiper
   # class for SPI interfaces on the Raspberry Pi
   class Spi
-    # 65536 = 256us = 4kHz
-    CLOCK_DIVIDER_65536 = 0
-    # 32768 = 126us = 8kHz
-    CLOCK_DIVIDER_32768 = 32768
-    # 16384 = 64us = 15.625kHz
-    CLOCK_DIVIDER_16384 = 16384
-    # 8192 = 32us = 31.25kHz
-    CLOCK_DIVIDER_8192  = 8192
-    # 4096 = 16us = 62.5kHz
-    CLOCK_DIVIDER_4096  = 4096
-    # 2048 = 8us = 125kHz
-    CLOCK_DIVIDER_2048  = 2048
-    # 1024 = 4us = 250kHz
-    CLOCK_DIVIDER_1024  = 1024
-    # 512 = 2us = 500kHz
-    CLOCK_DIVIDER_512   = 512
-    # 256 = 1us = 1MHz
-    CLOCK_DIVIDER_256   = 256
-    # 128 = 500ns = = 2MHz
-    CLOCK_DIVIDER_128   = 128
-    # 64 = 250ns = 4MHz
-    CLOCK_DIVIDER_64    = 64
-    # 32 = 125ns = 8MHz
-    CLOCK_DIVIDER_32    = 32
-    # 16 = 50ns = 20MHz
-    CLOCK_DIVIDER_16    = 16
-
     # Least signifigant bit first, e.g. 4 = 0b001
     LSBFIRST = 0
     # Most signifigant bit first, e.g. 4 = 0b100
@@ -102,7 +75,23 @@ module PiPiper
       Bcm2835.spi_end
     end
 
-    def clock(divider)
+    # Sets the SPI clock frequency
+    def clock(frequency)
+      options = {4000     => 0,      #4 kHz
+                 8000     => 32768,  #8 kHz
+                 15625    => 16384,  #15.625 kHz
+                 31250    => 8192,   #31.25 kHz
+                 62500    => 4096,   #62.5 kHz
+                 125000   => 2048,   #125 kHz
+                 250000   => 1024,   #250 kHz
+                 500000   => 512,    #500 kHz
+                 1000000  => 256,    #1 MHz
+                 2000000  => 128,    #2 MHz
+                 4000000  => 64,     #4 MHz
+                 8000000  => 32,     #8 MHz
+                 20000000 => 16      #20 MHz
+               }
+      divider = options[frequency]
       Bcm2835.spi_clock(divider)
     end
 
