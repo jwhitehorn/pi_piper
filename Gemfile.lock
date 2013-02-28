@@ -1,0 +1,25 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    allison (2.0.3)
+    echoe (4.6.3)
+      allison (>= 2.0.3)
+      gemcutter (>= 0.7.0)
+      rake (>= 0.9.2)
+      rdoc (>= 3.6.1)
+      rubyforge (>= 2.0.4)
+    ffi (1.4.0)
+    gemcutter (0.7.1)
+    json_pure (1.7.7)
+    rake (10.0.3)
+    rdoc (4.0.0)
+    rubyforge (2.0.4)
+      json_pure (>= 1.1.7)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  echoe
+  ffi
+  rake
