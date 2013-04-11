@@ -25,6 +25,7 @@ module PiPiper
     attach_function :spi_set_data_mode, :bcm2835_spi_setDataMode,    [:uint8], :void
     attach_function :spi_chip_select_polarity, 
                     :bcm2835_spi_setChipSelectPolarity,              [:uint8, :uint8], :void
+    attach_function :pin_set_pud,         :bcm2835_gpio_set_pud,     [:uint8, :uint8], :void
 
     def self.spi_transfer_bytes(data)
       data_out = FFI::MemoryPointer.new(data.count) 

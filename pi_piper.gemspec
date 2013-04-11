@@ -18,6 +18,9 @@ Gem::Specification.new do |s|
   s.rubygems_version = "2.0.0"
   s.summary = "Event driven Raspberry Pi GPIO library"
 
+  s.add_development_dependency(%q<rake>, [">= 0"])
+  s.add_development_dependency(%q<echoe>, [">= 0"])
+
   if s.respond_to? :specification_version then
     s.specification_version = 4
 
