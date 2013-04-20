@@ -27,14 +27,14 @@ class RemoteSwitch
   def _switch(switch)
     @bit = [142, 142, 142, 142, 142, 142, 142, 142, 142, 142, 142, 136, 128, 0, 0, 0]
 
-    for t in 0..4 do
+    0.upto(4) do |t|
       if @key[t]!=0
         @bit[t]=136
       end
     end
 
     x=1
-    for i in 5..9 do
+    5.upto(9) do |i|
       if @device & x > 0
         @bit[i] = 136
       end
@@ -47,10 +47,10 @@ class RemoteSwitch
     end
 
     pulses = []
-    for y in 0..15 do
+    0.upto(15) do |y|
       x = 128
-      for i in 1..8 do
-        b = (@bit[y] & x > 0) ? true : false
+      1.upto(8) do |i|
+        b = @bit[y] & x > 0
         pulses << b
         x = x>>1
       end
@@ -58,10 +58,11 @@ class RemoteSwitch
 
     @pin.off
     start_time = Time.now
-    REPEAT.times do
-      last_time = Time.now
+    last_time = Time.now
 
-      for b in pulses do
+    REPEAT.times do
+
+      pulses.each do |b|
         while(current_time = Time.now; current_time < last_time + PULSE) do
           sleep(PULSE / 1_000)
         end
@@ -70,6 +71,7 @@ class RemoteSwitch
       end
 
     end
+    
     end_time = Time.now
     puts "took %.0f microsecs per pulse" % ((end_time - start_time) / (10 * 16 * 8) * 1_000_000)
   end
