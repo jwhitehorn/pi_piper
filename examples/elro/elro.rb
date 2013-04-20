@@ -5,7 +5,6 @@ require 'pi_piper'
 class RemoteSwitch
 
   REPEAT = 10 # Number of transmissions
-  PULSE_LENGTH = 300 # microseconds
 
   # devices: A = 1, B = 2, C = 4, D = 8, E = 16
   # key: according to dipswitches on your Elro receivers
@@ -58,20 +57,11 @@ class RemoteSwitch
 
     @pin.off
     start_time = Time.now
-    last_time = Time.now
-
     REPEAT.times do
-
       pulses.each do |b|
-        while(current_time = Time.now; current_time < last_time + PULSE) do
-          sleep(PULSE / 1_000)
-        end
         @pin.update_value(b)
-        last_time = current_time
       end
-
     end
-    
     end_time = Time.now
     puts "took %.0f microsecs per pulse" % ((end_time - start_time) / (10 * 16 * 8) * 1_000_000)
   end
