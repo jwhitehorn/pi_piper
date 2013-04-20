@@ -57,16 +57,21 @@ class RemoteSwitch
     end
 
     @pin.off
-    starttime = Time.now
+    start_time = Time.now
     REPEAT.times do
+      last_time = Time.now
+
       for b in pulses do
+        while(current_time = Time.now; current_time < last_time + PULSE) do
+          sleep(PULSE / 1_000)
+        end
         @pin.update_value(b)
-# do not sleep, since raspberrypi take around 500 microseconds to the pin.update_value(b)
-#        sleep(PULSE_LENGTH / 1_000_000.0)
+        last_time = current_time
       end
+
     end
-    endtime = Time.now
-    puts "took %.0f microsecs per pulse" % ((endtime - starttime) / (10 * 16 * 8) * 1_000_000)
+    end_time = Time.now
+    puts "took %.0f microsecs per pulse" % ((end_time - start_time) / (10 * 16 * 8) * 1_000_000)
   end
 end
 
