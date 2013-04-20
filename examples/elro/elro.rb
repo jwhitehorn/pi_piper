@@ -5,6 +5,8 @@ require 'pi_piper'
 class RemoteSwitch
 
   REPEAT = 10 # Number of transmissions
+  DIP_OFF = 142
+  DIP_ON  = 136
 
   # devices: A = 1, B = 2, C = 4, D = 8, E = 16
   # key: according to dipswitches on your Elro receivers
@@ -24,25 +26,17 @@ class RemoteSwitch
   end
 
   def _switch(switch)
-    @bit = [142, 142, 142, 142, 142, 142, 142, 142, 142, 142, 142, 136, 128, 0, 0, 0]
+    @bit = [DIP_OFF, DIP_OFF, DIP_OFF, DIP_OFF, DIP_OFF, # key
+            DIP_OFF, DIP_OFF, DIP_OFF, DIP_OFF, DIP_OFF, # device
+            DIP_OFF, DIP_ON,                             # switch on/off
+            128, 0, 0, 0]
 
-    0.upto(4) do |t|
-      if @key[t]!=0
-        @bit[t]=136
-      end
-    end
-
-    x=1
-    5.upto(9) do |i|
-      if @device & x > 0
-        @bit[i] = 136
-      end
-      x = x<<1
-    end
+    set_bits_for_key
+    set_bits_for_device
 
     if switch
-      @bit[10] = 136
-      @bit[11] = 142
+      @bit[10] = DIP_ON
+      @bit[11] = DIP_OFF
     end
 
     pulses = []
@@ -65,9 +59,31 @@ class RemoteSwitch
     end_time = Time.now
     puts "took %.0f microsecs per pulse" % ((end_time - start_time) / (10 * 16 * 8) * 1_000_000)
   end
+
+private
+  
+  def set_bits_for_key
+    0.upto(4) do |t|
+      if @key[t] != 0
+        @bit[t] = DIP_ON
+      end
+    end
+  end
+
+  def set_bits_for_device
+    x=1
+    5.upto(9) do |i|
+      if @device & x > 0
+        @bit[i] = DIP_ON
+      end
+      x = x<<1
+    end
+  end
+
 end
 
 if (!ARGV[0])
   exit(0)
 end
 RemoteSwitch.new(ARGV[0].to_i, [0,0,0,0,1], 17)._switch(ARGV[1] == "1")
+
