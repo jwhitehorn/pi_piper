@@ -33,17 +33,7 @@ class RemoteSwitch
     sequence << (switch ? [DIP_ON, DIP_OFF] : [DIP_OFF, DIP_ON])
     sequence << [128, 0, 0, 0]
 
-    pulses = pulses_from_sequence(sequence.flatten)
-
-    @pin.off
-    start_time = Time.now
-    REPEAT.times do
-      pulses.each do |b|
-        @pin.update_value(b)
-      end
-    end
-    end_time = Time.now
-    puts "took %.0f microsecs per pulse" % ((end_time - start_time) / (10 * 16 * 8) * 1_000_000)
+    send_pulses(pulses_from_sequence(sequence.flatten))
   end
 
 private
@@ -74,6 +64,19 @@ private
     end
     pulses
   end
+
+  def send_pulses(pulses)
+    @pin.off
+    start_time = Time.now
+    REPEAT.times do
+      pulses.each do |b|
+        @pin.update_value(b)
+      end
+    end
+    end_time = Time.now
+    puts "took %.0f microsecs per pulse" % ((end_time - start_time) / (10 * 16 * 8) * 1_000_000)
+  end
+
 end
 
 if (!ARGV[0])
