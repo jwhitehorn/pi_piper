@@ -26,20 +26,14 @@ class RemoteSwitch
   end
 
   def _switch(switch)
-    @bit = [DIP_OFF, DIP_OFF, DIP_OFF, DIP_OFF, DIP_OFF, # key
-            DIP_OFF, DIP_OFF, DIP_OFF, DIP_OFF, DIP_OFF, # device
-            DIP_OFF, DIP_ON,                             # switch on/off
-            128, 0, 0, 0]
+    sequence = []
 
-    set_bits_for_key
-    set_bits_for_device
+    sequence << bits_for_key
+    sequence << bits_for_device
+    sequence << (switch ? [DIP_ON, DIP_OFF] : [DIP_OFF, DIP_ON])
+    sequence << [128, 0, 0, 0]
 
-    if switch
-      @bit[10] = DIP_ON
-      @bit[11] = DIP_OFF
-    end
-
-    pulses = get_pulses_from_bits
+    pulses = pulses_from_sequence(sequence.flatten)
 
     @pin.off
     start_time = Time.now
@@ -54,29 +48,29 @@ class RemoteSwitch
 
 private
   
-  def set_bits_for_key
-    0.upto(4) do |t|
-      if @key[t] != 0
-        @bit[t] = DIP_ON
-      end
+  def bits_for_key
+    sequence = []
+    0.upto(4) do |i|
+      sequence << ((@key[i] == 1) ? DIP_ON : DIP_OFF)
     end
+    sequence
   end
 
-  def set_bits_for_device
+  def bits_for_device
+    sequence = []
     x=1
     5.upto(9) do |i|
-      if @device & x > 0
-        @bit[i] = DIP_ON
-      end
+      sequence << ((@device & x > 0) ? DIP_ON : DIP_OFF)
       x = x<<1
     end
+    sequence
   end
 
-  def get_pulses_from_bits
+  def pulses_from_sequence(sequence)
     pulses = []
-    @bit.each do |bit|
-      bitz = sprintf("%08d", bit.to_s(2)).split("").map {|b| b.to_i & 1 == 1}
-      pulses.push(*bitz)
+    sequence.each do |part|
+      bits = sprintf("%08d", part.to_s(2)).split("").map {|b| b.to_i & 1 == 1}
+      pulses.push(*bits)
     end
     pulses
   end
