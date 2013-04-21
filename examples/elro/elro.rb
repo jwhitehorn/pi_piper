@@ -47,19 +47,14 @@ private
   end
 
   def bits_for_device
-    sequence = []
-    x=1
-    5.upto(9) do |i|
-      sequence << ((@device & x > 0) ? DIP_ON : DIP_OFF)
-      x = x<<1
-    end
-    sequence
+    bits = convert_to_bits(@device, 5)
+    bits.reverse.map {|b| b ? DIP_ON : DIP_OFF}
   end
 
   def pulses_from_sequence(sequence)
     pulses = []
     sequence.each do |part|
-      bits = sprintf("%08d", part.to_s(2)).split("").map {|b| b.to_i & 1 == 1}
+      bits = convert_to_bits(part, 8)
       pulses.push(*bits)
     end
     pulses
@@ -75,6 +70,10 @@ private
     end
     end_time = Time.now
     puts "took %.0f microsecs per pulse" % ((end_time - start_time) / (10 * 16 * 8) * 1_000_000)
+  end
+
+  def convert_to_bits(num, length)
+    sprintf("%0#{length}d", num.to_s(2)).split("").map {|b| b.to_i & 1 == 1}
   end
 
 end
