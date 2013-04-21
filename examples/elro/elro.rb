@@ -39,15 +39,7 @@ class RemoteSwitch
       @bit[11] = DIP_OFF
     end
 
-    pulses = []
-    0.upto(15) do |y|
-      x = 128
-      1.upto(8) do |i|
-        b = @bit[y] & x > 0
-        pulses << b
-        x = x>>1
-      end
-    end
+    pulses = get_pulses_from_bits
 
     @pin.off
     start_time = Time.now
@@ -80,6 +72,14 @@ private
     end
   end
 
+  def get_pulses_from_bits
+    pulses = []
+    @bit.each do |bit|
+      bitz = sprintf("%08d", bit.to_s(2)).split("").map {|b| b.to_i & 1 == 1}
+      pulses.push(*bitz)
+    end
+    pulses
+  end
 end
 
 if (!ARGV[0])
