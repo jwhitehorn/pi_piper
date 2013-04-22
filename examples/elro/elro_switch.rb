@@ -14,49 +14,41 @@ class ElroSwitch
     @pin = piper_pin
   end
 
-  def switch_on
-    self.switch(true)
-  end
-
-  def switch_off
-    self.switch(false)
-  end
-
   def switch(switch)
     sequence = []
-    sequence << sequence_for_key
-    sequence << sequence_for_device
+    sequence << ElroSwitch.sequence_for_key(@key)
+    sequence << ElroSwitch.sequence_for_device(@device)
     sequence << (switch ? [DIP_ON, DIP_OFF] : [DIP_OFF, DIP_ON])
     sequence << [128, 0, 0, 0]
 
-    send_pulses(pulses_from_sequence(sequence.flatten))
+    ElroSwitch.send_pulses(@pin, ElroSwitch.pulses_from_sequence(sequence.flatten))
   end
 
 private
   
-  def sequence_for_key
-    @key.map { |dip| (dip == 1) ? DIP_ON : DIP_OFF }
+  def ElroSwitch.sequence_for_key(key)
+    key.map { |dip| (dip == 1) ? DIP_ON : DIP_OFF }
   end
 
-  def sequence_for_device
-    convert_to_bits(@device, 5).reverse.map { |b| b ? DIP_ON : DIP_OFF }
+  def ElroSwitch.sequence_for_device(device)
+    ElroSwitch.convert_to_bits(device, 5).reverse.map { |b| b ? DIP_ON : DIP_OFF }
   end
 
-  def pulses_from_sequence(sequence)
-    sequence.map { |part| convert_to_bits(part, 8) }.flatten
+  def ElroSwitch.pulses_from_sequence(sequence)
+    sequence.map { |part| ElroSwitch.convert_to_bits(part, 8) }.flatten
   end
 
-  def send_pulses(pulses)
-    @pin.off
+  def ElroSwitch.send_pulses(pin, pulses)
+    pin.off
     start_time = Time.now
     REPEAT.times do
-      pulses.each { |b| @pin.update_value(b) }
+      pulses.each { |b| pin.update_value(b) }
     end
     end_time = Time.now
     puts "avg %.0f microsecs per pulse" % ((end_time - start_time) / (10 * 16 * 8) * 1_000_000)
   end
 
-  def convert_to_bits(num, length)
+  def ElroSwitch.convert_to_bits(num, length)
     sprintf("%0#{length}d", num.to_s(2)).split("").map {|b| b.to_i & 1 == 1}
   end
 
