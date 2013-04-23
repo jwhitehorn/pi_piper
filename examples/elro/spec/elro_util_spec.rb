@@ -12,6 +12,18 @@ describe ElroUtil do
       [136, 136, 136, 142, 142]
   end
 
+  it "generates correct sequence for on/off" do
+    ElroUtil.sequence_for_onoff(true).should == 
+      [136, 142]
+    ElroUtil.sequence_for_onoff(false).should == 
+      [142, 136]
+  end
+
+  it "generates correct sequence for static part" do
+    ElroUtil.sequence_for_static_part.should == 
+      [128, 0, 0, 0]
+  end
+
   it "converts numbers to bits" do
     ElroUtil.convert_to_bits(7, 8).should == [false, false, false, false, false, true, true, true]
   end

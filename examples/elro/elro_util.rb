@@ -12,6 +12,14 @@ module ElroUtil
     ElroUtil.convert_to_bits(device, 5).reverse.map { |b| b ? DIP_ON : DIP_OFF }
   end
 
+  def ElroUtil.sequence_for_onoff(switch_on)
+    switch_on ? [DIP_ON, DIP_OFF] : [DIP_OFF, DIP_ON]
+  end
+
+  def ElroUtil.sequence_for_static_part
+    [128, 0, 0, 0]
+  end
+
   def ElroUtil.pulses_from_sequence(sequence)
     sequence.map { |part| ElroUtil.convert_to_bits(part, 8) }.flatten
   end

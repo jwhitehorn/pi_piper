@@ -17,8 +17,8 @@ class ElroSwitch
     sequence = []
     sequence << ElroUtil.sequence_for_key(@key)
     sequence << ElroUtil.sequence_for_device(@device)
-    sequence << (switch ? [DIP_ON, DIP_OFF] : [DIP_OFF, DIP_ON])
-    sequence << [128, 0, 0, 0]
+    sequence << ElroUtil.sequence_for_onoff(switch)
+    sequence << ElroUtil.sequence_for_static_part
 
     pulses = ElroUtil.pulses_from_sequence(sequence.flatten)
     ElroUtil.send_pulses(@pin, pulses)
