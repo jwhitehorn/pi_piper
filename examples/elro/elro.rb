@@ -2,9 +2,12 @@
 require 'pi_piper'
 require 'elro_switch'
 
-if (!ARGV[0])
-  exit(0)
-end
+exit(0) unless ARGV[0]
+
+device = ARGV[0].to_i
+switch_on = ARGV[1]
+key = [0,0,0,0,1]
 
 pin = PiPiper::Pin.new(:pin => 17, :direction => :out)
-ElroSwitch.new(ARGV[0].to_i, [0,0,0,0,1], pin).switch(ARGV[1] == "1")
+elro = ElroSwitch.new(device, key, pin)
+elro.switch(switch_on == "1")
