@@ -1,4 +1,4 @@
-class ElroUtil
+module ElroUtil
 
   DIP_OFF = 142
   DIP_ON  = 136
