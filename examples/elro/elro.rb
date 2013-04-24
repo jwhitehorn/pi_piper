@@ -1,4 +1,6 @@
 #!/usr/bin/ruby
+$LOAD_PATH << File.join(File.dirname(__FILE__), 'lib')
+
 require 'pi_piper'
 require 'elro_switch'
 

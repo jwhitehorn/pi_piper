@@ -1,4 +1,4 @@
-require 'elro_switch'
+require 'spec_helper'
 
 describe ElroSwitch do
 

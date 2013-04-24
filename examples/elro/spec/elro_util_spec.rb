@@ -1,4 +1,4 @@
-require 'elro_util'
+require 'spec_helper'
 
 describe ElroUtil do
 
