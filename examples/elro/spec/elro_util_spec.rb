@@ -43,8 +43,7 @@ describe ElroUtil do
 
   it "sends pulses" do
     pin = double("pi_piper_pin")
-    pin.stub(:off)
-    pin.should_receive(:update_value).exactly(40).times
+    pin.should_receive(:update_value).exactly(40 + 1).times
 
     ElroUtil.send_pulses(pin, [true, false, false, true])
   end

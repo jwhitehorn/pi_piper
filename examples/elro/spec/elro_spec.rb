@@ -25,8 +25,7 @@ describe ElroSwitch do
 
   it "sends pulses on switch" do
     pin = double("pi_piper_pin")
-    pin.stub(:off)
-    pin.should_receive(:update_value).exactly(16 * 8 * 10).times
+    pin.should_receive(:update_value).exactly(16 * 8 * 10 + 1).times
 
     elro = ElroSwitch.new(1, [0,0,1,0,1], pin)
     elro.switch(true)

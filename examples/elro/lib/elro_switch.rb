@@ -7,7 +7,7 @@ class ElroSwitch
   #          or 
   #          a numeric A = 1, B = 2, C = 4, D = 8, E = 16
   # key:     according to dipswitches on your Elro receivers
-  # pin:     an object that responses to #off and #updated_value(bool) (like PiPiper::Pin)
+  # pin:     an object that responses to #updated_value(bool) (like PiPiper::Pin)
   def initialize(device, key, piper_pin)
     raise ArgumentError.new("key has to be of size 5") unless key.size == 5
     raise ArgumentError.new("device has to be Numeric or Array") unless (device.is_a?(Numeric) or device.is_a?(Array))

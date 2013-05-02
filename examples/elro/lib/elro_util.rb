@@ -29,7 +29,7 @@ module ElroUtil
   end
 
   def ElroUtil.send_pulses(pin, pulses, verbose=false)
-    pin.off
+    pin.update_value(false)
     start_time = Time.now
     REPEAT.times do
       pulses.each { |b| pin.update_value(b) }
