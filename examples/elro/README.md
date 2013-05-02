@@ -16,6 +16,8 @@ First we need a RF-remote-switch. Here in Europe Elro sells a lot of [these thin
 
 This switch will be connected to an outlet and to a lamp (or what ever you want to switch).
 
+![elro dips](docs/setup.jpg)
+
 
 ## RF Link Transmitter
 
