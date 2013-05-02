@@ -9,7 +9,11 @@ module ElroUtil
   end
 
   def ElroUtil.sequence_for_device(device)
-    ElroUtil.convert_to_bits(device, 5).reverse.map { |b| b ? DIP_ON : DIP_OFF }
+    if device.is_a?(Array)
+      device.map { |dip| dip == 1 ? DIP_ON : DIP_OFF }
+    elsif device.is_a?(Numeric)
+      ElroUtil.convert_to_bits(device, 5).reverse.map { |b| b ? DIP_ON : DIP_OFF }
+    end
   end
 
   def ElroUtil.sequence_for_onoff(switch_on)

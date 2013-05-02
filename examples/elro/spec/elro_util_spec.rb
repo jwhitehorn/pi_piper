@@ -12,6 +12,11 @@ describe ElroUtil do
       [136, 136, 136, 142, 142]
   end
 
+  it "generates correct sequence for device as array" do
+    ElroUtil.sequence_for_device([1,1,1,0,0]).should == 
+      [136, 136, 136, 142, 142]
+  end
+
   it "generates correct sequence for on/off" do
     ElroUtil.sequence_for_onoff(true).should == 
       [136, 142]
