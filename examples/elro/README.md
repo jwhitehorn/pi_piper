@@ -51,6 +51,23 @@ elro.switch(true) # switch on
 elro.switch(false) # switch off
 ```
 
+## Warning
+
+The Raspberry is not build to be the fastest hardware in the world.
+Ruby (MRI) is not fastest programming language (but still the best).
+The Elro Switch expects the 1280 signals for each switch-event to be 
+transmitted with a frequency of 300 microseconds (but as I have observed
+will still operate while using frequencies from ≈100 to ≈600 microseconds
+per signal).
+
+This implementation (using PiPiper) reaches a frequency of around 
+500 microseconds on an RaspberryPi without any wait or sleep.
+
+Other implementation (in python or C) need to time their signals to
+not be too fast.
+
+Keep that in mind, if this code will run on faster hardware or faster Rubies.
+
 ## Credits
 
 The `ElroSwitch` library is mostly a (heavily refactored) port from [this python script](http://pastebin.com/aRipYrZ6) by Heiko H., 

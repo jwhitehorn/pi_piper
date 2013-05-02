@@ -1,5 +1,23 @@
 require 'elro_util'
 
+# ElroSwitch is a little tool written to send trigger-events from a RaspberryPi 
+# to an Elro remote controlled switch.
+#
+# It works perfectly with PiPiper: https://github.com/jwhitehorn/pi_piper
+#
+# See README.md for more information.
+#
+# == CREDITS
+# Written by Torsten Mangner (https://github.com/alphaone).
+# This library is mostly a (heavily refactored) port from this python script 
+#   http://pastebin.com/aRipYrZ6
+# by Heiko H.,
+# which is a port from a C++ snippet
+#   http://www.jer00n.nl/433send.cpp
+# written by J. Lukas,
+# and influenced by this Arduino source code
+#   http://gathering.tweakers.net/forum/view_message/34919677
+# written by Piepersnijder.
 class ElroSwitch
   include ElroUtil
 
