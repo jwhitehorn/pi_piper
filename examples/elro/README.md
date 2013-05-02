@@ -39,8 +39,8 @@ To send the signals we will be using the great pi-piper interface to the raspber
 Since the elro-switches are triggered through quite complex sequences (*1280 signals for one switch*) we will be using a little library called `ElroSwitch` that calculates and sends these sequences via a pi-piper pin.
 
 ```ruby
-device = 1        # according to the dip-switches
-key = [0,0,0,0,1] # according to the dip-switches
+device = [1,0,0,0,0] # according to the dip-switches
+key    = [0,0,0,0,1] # according to the dip-switches
 
 pin = PiPiper::Pin.new(:pin => 17, :direction => :out)
 elro = ElroSwitch.new(device, key, pin)
