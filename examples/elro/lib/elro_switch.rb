@@ -7,15 +7,16 @@ class ElroSwitch
   #          or 
   #          a numeric A = 1, B = 2, C = 4, D = 8, E = 16
   # key:     according to dipswitches on your Elro receivers
-  # pin:     an object that responses to #updated_value(bool) (like PiPiper::Pin)
-  def initialize(device, key, piper_pin)
+  # pin:     an object that responses to #update_value(bool) (like PiPiper::Pin)
+  def initialize(device, key, pin)
     raise ArgumentError.new("key has to be of size 5") unless key.size == 5
     raise ArgumentError.new("device has to be Numeric or Array") unless (device.is_a?(Numeric) or device.is_a?(Array))
     raise ArgumentError.new("device has to be of size 5") if (device.is_a?(Array) and device.size != 5)
     raise ArgumentError.new("device has to be between 0 and 31") if (device.is_a?(Numeric) and !((0..31) === device))
+    raise ArgumentError.new("pin has no method :update_value") unless pin.respond_to?(:update_value)
     @key = key
     @device = device
-    @pin = piper_pin
+    @pin = pin
   end
 
   def switch(switch)
