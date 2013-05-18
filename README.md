@@ -45,7 +45,9 @@ which have floating output in some states.
 You can set resistors when creating a pin passing a :pull parameter
 (which can be :up, :down or :off, which is the default).
 
+```ruby
 pin = PiPiper::Pin.new(:pin => 17, :direction => :in, :pull => :up)
+```
 
 This way, the pin will always return 'on' if it is unconnected or of the
 sensor has an open collector output.
