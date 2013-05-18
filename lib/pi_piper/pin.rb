@@ -1,8 +1,12 @@
 module PiPiper
   # Represents a GPIO pin on the Raspberry Pi
   class Pin
+    GPIO_PUD_OFF = 0
+    GPIO_PUD_DOWN = 1
+    GPIO_PUD_UP = 2
+
     attr_reader :pin, :last_value, :value, :direction, :invert
-    
+
     #Initializes a new GPIO pin.
     #
     # @param [Hash] options A hash of options
@@ -10,20 +14,26 @@ module PiPiper
     # @option options [Symbol] :direction The direction of communication, either :in or :out. Defaults to :in.
     # @option options [Boolean] :invert Indicates if the value read from the physical pin should be inverted. Defaults to false.
     # @option options [Symbol] :trigger Indicates when the wait_for_change method will detect a change, either :rising, :falling, or :both edge triggers. Defaults to :both.
+    # @option options [Symbol] :pull Indicates if and how pull mode must be set when pin direction is set to :in. Either :up, :down or :offing. Defaults to :off.
     def initialize(options)
-      options = {:direction => :in, :invert => false, :trigger => :both}.merge options
+      options = {:direction => :in, :invert => false, :trigger => :both, :pull => nil}.merge options
       @pin = options[:pin]
       @direction = options[:direction]
       @invert = options[:invert]
       @trigger = options[:trigger]
-      
+      @pull = options[:pull]
+
+      raise "Invalid pull mode. Options are :up, :down or :float (default)" unless [:up, :down, :float, :off].include? @pull
+      raise "Unable to use pull-ups : pin direction must be ':in' for this" if @direction != :in && [:up, :down].include?(@pull)
       raise "Invalid direction. Options are :in or :out" unless [:in, :out].include? @direction
       raise "Invalid trigger. Options are :rising, :falling, or :both" unless [:rising, :falling, :both].include? @trigger
-     
+
       File.open("/sys/class/gpio/export", "w") { |f| f.write("#{@pin}") }
       File.open(direction_file, "w") { |f| f.write(@direction == :out ? "out" : "in") }
-      
-      read 
+
+      pull!(options[:pull])
+
+      read
     end
     
     # If the pin has been initialized for output this method will set the logic level high.
@@ -51,7 +61,34 @@ module PiPiper
     def update_value(new_value)
       !new_value || new_value == 0 ? off : on
     end
-    
+
+    # When the pin has been initialized in input mode, internal resistors can be pulled up or down (respectively with :up and :down).
+    # Pulling an input pin wil prevent noise from triggering it when the input is floating. 
+    # For instance when nothing is plugged in, pulling the pin-up will make subsequent value readings to return 'on' (or high, or 1...).
+    # @param [Symbol] state Indicates if and how pull mode must be set when pin direction is set to :in. Either :up, :down or :offing. Defaults to :off.
+    def pull!(state)
+      return nil unless @direction == :in
+      @pull = case state
+              when :up then GPIO_PUD_UP
+              when :down then GPIO_PUD_DOWN
+              # :float and :off are just aliases
+              when :float, :off then GPIO_PUD_OFF
+              else nil
+              end
+
+      Bcm2835.pin_set_pud(@pin, @pull) if @pull
+      @pull
+    end
+
+    # If the pin direction is input, it will return the current state of pull-up/pull-down resistor, either :up, :down or :off.
+    def pull?
+      case @pull
+      when GPIO_PUD_UP then :up
+      when GPIO_PUD_DOWN then :down
+      else :off
+      end
+    end
+
     # Tests if the logic level has changed since the pin was last read.
     def changed?
       last_value != value

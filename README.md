@@ -38,6 +38,20 @@ PiPiper.wait
 
 Your block will be called when a change to the pin's state is detected.
 
+When using pins as input, you can use internal resistors to pull the pin 
+up or pull down. This is important if you use open-collector sensors
+which have floating output in some states.
+
+You can set resistors when creating a pin passing a :pull parameter
+(which can be :up, :down or :off, which is the default).
+
+pin = PiPiper::Pin.new(:pin => 17, :direction => :in, :pull => :up)
+
+This way, the pin will always return 'on' if it is unconnected or of the
+sensor has an open collector output.
+
+You can later alter the pulling resistors using PiPiper#pull!
+
 Additionally you can use pins as output too:
 
 ```ruby
