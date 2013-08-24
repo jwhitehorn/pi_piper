@@ -27,6 +27,9 @@ module PiPiper
                     :bcm2835_spi_setChipSelectPolarity,              [:uint8, :uint8], :void
     attach_function :pin_set_pud,         :bcm2835_gpio_set_pud,     [:uint8, :uint8], :void
 
+    #I2C suport...
+    attach_function :i2c_begin,      :bcm2835_i2c_begin,             [], :void
+
     def self.spi_transfer_bytes(data)
       data_out = FFI::MemoryPointer.new(data.count) 
       data_in = FFI::MemoryPointer.new(data.count)
