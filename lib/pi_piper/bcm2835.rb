@@ -2,7 +2,7 @@ require 'ffi'
 
 module PiPiper
   # The Bcm2835 module is not intended to be directly called.
-  # It serves as an FFI library for PiPiper::SPI.
+  # It serves as an FFI library for PiPiper::SPI & PiPiper::I2C.
   module Bcm2835
     extend FFI::Library
     ffi_lib File.dirname(__FILE__) + '/libbcm2835.img'
@@ -12,9 +12,17 @@ module PiPiper
     SPI_MODE2 = 2
     SPI_MODE3 = 3
 
+    I2C_REASON_OK         = 0  #Success
+    I2C_REASON_ERROR_NACK = 1  #Received a NACK
+    I2C_REASON_ERROR_CLKT = 2  #Received Clock Stretch Timeout
+    I2C_REASON_ERROR_DATA = 3  #Not all data is sent / received
+
     attach_function :init, :bcm2835_init, [], :uint8
     attach_function :close, :bcm2835_close, [], :uint8
 
+    attach_function :pin_set_pud,         :bcm2835_gpio_set_pud,     [:uint8, :uint8], :void
+
+    #SPI support...
     attach_function :spi_begin,       :bcm2835_spi_begin,            [], :uint8
     attach_function :spi_end,         :bcm2835_spi_end,              [], :uint8
     attach_function :spi_transfer,    :bcm2835_spi_transfer,         [:uint8], :uint8
@@ -25,11 +33,11 @@ module PiPiper
     attach_function :spi_set_data_mode, :bcm2835_spi_setDataMode,    [:uint8], :void
     attach_function :spi_chip_select_polarity, 
                     :bcm2835_spi_setChipSelectPolarity,              [:uint8, :uint8], :void
-    attach_function :pin_set_pud,         :bcm2835_gpio_set_pud,     [:uint8, :uint8], :void
 
-    #I2C suport...
+    #I2C support...
     attach_function :i2c_begin,      :bcm2835_i2c_begin,             [], :void
     attach_function :i2c_end,        :bcm2835_i2c_end,               [], :void
+    attach_function :i2c_write,      :bcm2835_i2c_write,             [:pointer, :uint], :uint8
 
     def self.spi_transfer_bytes(data)
       data_out = FFI::MemoryPointer.new(data.count) 
@@ -39,6 +47,13 @@ module PiPiper
       spi_transfernb(data_out, data_in, data.count)
 
       (0..data.count-1).map { |i| data_in.get_uint8(i) }
+    end
+
+    def self.i2c_transfer_bytes(data)
+      data_out = FFI::MemoryPointer.new(data.count)
+      (0..data.count-1).each{ |i| data_out.put_uint8(i, data[i]) } 
+
+      i2c_write data_out, data.count
     end
 
   end
