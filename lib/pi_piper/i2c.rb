@@ -23,6 +23,18 @@ module PiPiper
       instance.end
     end
 
+    def self.clock=(clock)
+     valid_clocks = [100.kilohertz, 
+                     399.3610.kilohertz,
+                     1.666.megahertz,
+                     1.689.megahertz] 
+
+      raise "Invalid clock rate. Valid clocks are 100 kHz, 399.3610 kHz, 1.666 MHz and 1.689 MHz" unless valid_clocks.include? clock
+
+      raise "todo"
+
+    end
+
     def write(params)
       data = params[:data]
       address = params[:to]
