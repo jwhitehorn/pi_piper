@@ -29,6 +29,7 @@ module PiPiper
 
     #I2C suport...
     attach_function :i2c_begin,      :bcm2835_i2c_begin,             [], :void
+    attach_function :i2c_end,        :bcm2835_i2c_end,               [], :void
 
     def self.spi_transfer_bytes(data)
       data_out = FFI::MemoryPointer.new(data.count) 

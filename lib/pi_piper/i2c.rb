@@ -7,6 +7,10 @@ module PiPiper
       Bcm2835.i2c_begin
     end
 
+    def end
+      Bcm2835.i2c_end
+    end
+
   end
 
 end
