@@ -54,7 +54,7 @@ module PiPiper
       mode = SPI_MODE1 if cpol == 0 and cpha == 1
       mode = SPI_MODE2 if cpol == 1 and cpha == 0
       mode = SPI_MODE3 if cpol == 1 and cpha == 1
-      Bcma2835.spi_set_data_mode mode
+      Bcm2835.spi_set_data_mode mode
     end
 
     #Begin an SPI block. All SPI communications should be wrapped in a block.
