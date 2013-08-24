@@ -23,17 +23,12 @@ module PiPiper
       instance.end
     end
 
-    def write(*args)
-      case args.count
-        when 0
-          raise ArgumentError.new("missing arguments")
-        when 1
-          data = args.first
-        else
-          data = args
-      end
+    def write(params)
+      data = params[:data]
+      address = params[:to]
 
-      raise "not implemented yet" unless data.class.include? Enumerable
+      raise ":data must be enumerable" unless data.class.include? Enumerable
+      Bcm2835.i2c_set_address address
       Bcm2835.i2c_transfer_bytes data
     end
 
