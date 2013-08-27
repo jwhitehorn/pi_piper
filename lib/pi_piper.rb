@@ -1,8 +1,4 @@
-Dir[File.dirname(__FILE__) + '/pi_piper/*.rb'].each {|file| require file }
-at_exit do 
-  PiPiper::Bcm2835.close
-end 
-PiPiper::Bcm2835.init
+Dir[File.dirname(__FILE__) + '/pi_piper/*.rb'].each {|file| require file unless file.end_with?('bcm2835.rb') }
 
 module PiPiper
   extend self
