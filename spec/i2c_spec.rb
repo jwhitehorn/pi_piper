@@ -2,8 +2,19 @@ require '../pi_piper/lib/pi_piper.rb'
 require 'stub_driver.rb'
 include PiPiper
 
-describe 'pi_piper' do
-  describe "when in i2c block" do
+describe 'I2C' do
+
+  describe "clock setting" do
+    it "should accept 100 kHz" do
+      Platform.driver = StubDriver.new.tap do |d|                                            
+        d.should_receive(:i2c_set_clock).with(100.kilohertz)                            
+      end 
+
+      I2C.clock = 100.kilohertz
+    end
+  end
+
+  describe "when in block" do
 
     it "should call i2c_begin" do
       driver = StubDriver.new                                                                  

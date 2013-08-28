@@ -39,6 +39,7 @@ module PiPiper
     attach_function :i2c_end,        :bcm2835_i2c_end,               [], :void
     attach_function :i2c_write,      :bcm2835_i2c_write,             [:pointer, :uint], :uint8
     attach_function :i2c_set_address,:bcm2835_i2c_setSlaveAddress,   [:uint8], :void
+    attach_function :i2c_set_clock_divider, :bcm2835_i2c_setClockDivider,     [:uint16], :void
 
     def self.spi_transfer_bytes(data)
       data_out = FFI::MemoryPointer.new(data.count) 
