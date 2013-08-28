@@ -46,6 +46,16 @@ describe 'pi_piper' do
         end
       end
 
+      it "should pass data to driver" do
+        Platform.driver = StubDriver.new.tap do |d|
+          d.should_receive(:i2c_transfer_bytes).with([1, 2, 3, 4])
+        end
+
+        I2C.begin do
+          write :to => 4, :data => [1, 2, 3, 4]
+        end
+      end
+
     end
 
   end
