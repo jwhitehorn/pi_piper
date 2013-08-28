@@ -15,12 +15,15 @@ module PiPiper
 
     def self.begin(&block)
       instance = I2C.new
-      if block.arity > 0
-        block.call instance
-      else
-        instance.instance_exec &block 
+      begin
+        if block.arity > 0
+          block.call instance
+        else
+          instance.instance_exec &block 
+        end
+      ensure
+        instance.end
       end
-      instance.end
     end
 
     def self.clock=(clock)
