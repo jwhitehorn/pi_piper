@@ -34,5 +34,19 @@ describe 'pi_piper' do
       end
     end
 
+    describe "write operation" do
+
+      it "should set address" do
+        Platform.driver = StubDriver.new.tap do |d|
+          d.should_receive(:i2c_set_address).with(4)
+        end
+    
+        I2C.begin do
+          write :to => 4, :data => [1, 2, 3, 4]
+        end
+      end
+
+    end
+
   end
 end
