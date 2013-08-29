@@ -34,8 +34,7 @@ module PiPiper
 
       raise "Invalid clock rate. Valid clocks are 100 kHz, 399.3610 kHz, 1.666 MHz and 1.689 MHz" unless valid_clocks.include? clock
 
-      raise "todo"
-
+      Platform.driver.i2c_set_clock clock
     end
 
     def write(params)
