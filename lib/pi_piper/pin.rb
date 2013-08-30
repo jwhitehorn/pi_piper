@@ -16,7 +16,7 @@ module PiPiper
     # @option options [Symbol] :trigger Indicates when the wait_for_change method will detect a change, either :rising, :falling, or :both edge triggers. Defaults to :both.
     # @option options [Symbol] :pull Indicates if and how pull mode must be set when pin direction is set to :in. Either :up, :down or :offing. Defaults to :off.
     def initialize(options)
-      options = {:direction => :in, :invert => false, :trigger => :both, :pull => nil}.merge options
+      options = {:direction => :in, :invert => false, :trigger => :both, :pull => :off}.merge options
       @pin = options[:pin]
       @direction = options[:direction]
       @invert = options[:invert]
@@ -28,8 +28,7 @@ module PiPiper
       raise "Invalid direction. Options are :in or :out" unless [:in, :out].include? @direction
       raise "Invalid trigger. Options are :rising, :falling, or :both" unless [:rising, :falling, :both].include? @trigger
 
-      File.open("/sys/class/gpio/export", "w") { |f| f.write("#{@pin}") }
-      File.open(direction_file, "w") { |f| f.write(@direction == :out ? "out" : "in") }
+      @direction == :out ? Platform.driver.pin_output(@pin) : Platform.driver.pin_input(@pin)
 
       pull!(options[:pull])
 
