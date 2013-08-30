@@ -30,7 +30,7 @@ module PiPiper
 
       @direction == :out ? Platform.driver.pin_output(@pin) : Platform.driver.pin_input(@pin)
 
-      pull!(options[:pull])
+      pull!(@pull)
 
       read
     end
@@ -75,7 +75,7 @@ module PiPiper
               else nil
               end
 
-      Bcm2835.pin_set_pud(@pin, @pull) if @pull
+      Platform.driver.pin_set_pud(@pin, @pull) if @pull
       @pull
     end
 
