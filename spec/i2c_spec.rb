@@ -5,8 +5,18 @@ include PiPiper
 describe 'I2C' do
 
   describe "clock setting" do
+
+    it "should check driver settings" do 
+      Platform.driver = StubDriver.new.tap do |d|
+        d.should_receive(:i2c_allowed_clocks).and_return([100.kilohertz])
+      end
+
+      I2C.clock = 100.kilohertz
+    end
+
     it "should accept 100 kHz" do
       Platform.driver = StubDriver.new.tap do |d|                                            
+        d.should_receive(:i2c_allowed_clocks).and_return([100.kilohertz])
         d.should_receive(:i2c_set_clock).with(100.kilohertz)                            
       end 
 

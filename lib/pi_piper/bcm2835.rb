@@ -41,6 +41,13 @@ module PiPiper
     attach_function :i2c_set_address,:bcm2835_i2c_setSlaveAddress,   [:uint8], :void
     attach_function :i2c_set_clock_divider, :bcm2835_i2c_setClockDivider,     [:uint16], :void
 
+    def self.i2c_allowed_clocks
+      [100.kilohertz,
+       399.3610.kilohertz,
+       1.666.megahertz,
+       1.689.megahertz]      
+    end
+
     def self.spi_transfer_bytes(data)
       data_out = FFI::MemoryPointer.new(data.count) 
       data_in = FFI::MemoryPointer.new(data.count)
