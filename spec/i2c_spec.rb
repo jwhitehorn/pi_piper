@@ -22,6 +22,14 @@ describe 'I2C' do
 
       I2C.clock = 100.kilohertz
     end
+
+    it "should not accept 200 kHz" do
+      Platform.driver = StubDriver.new.tap do |d|
+        d.should_receive(:i2c_allowed_clocks).and_return([100.kilohertz])
+      end
+
+      expect { I2C.clock = 200.kilohertz }.to raise_error
+    end
   end
 
   describe "when in block" do
