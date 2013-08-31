@@ -27,5 +27,23 @@ describe 'Pin' do
 
     Pin.new :pin => 4, :direction => :out
   end
+  
+  it "should detect on?" do
+    Platform.driver = StubDriver.new.tap do |d|
+      d.should_receive(:pin_read).with(4).and_return(1)
+    end
+
+    pin = Pin.new :pin => 4, :direction => :out
+    pin.on?.should == true
+  end
+  
+  it "should detect off?" do
+    Platform.driver = StubDriver.new.tap do |d|
+      d.should_receive(:pin_read).with(4).and_return(0)
+    end
+
+    pin = Pin.new :pin => 4, :direction => :out
+    pin.off?.should == true
+  end
 
 end
