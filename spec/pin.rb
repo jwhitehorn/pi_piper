@@ -45,5 +45,23 @@ describe 'Pin' do
     pin = Pin.new :pin => 4, :direction => :out
     pin.off?.should == true
   end
+  
+  it "should invert true" do
+    Platform.driver = StubDriver.new.tap do |d|
+      d.should_receive(:pin_read).with(4).and_return(1)
+    end
+
+    pin = Pin.new :pin => 4, :direction => :out, :invert => true
+    pin.on?.should == false    
+  end
+  
+  it "should invert true" do
+    Platform.driver = StubDriver.new.tap do |d|
+      d.should_receive(:pin_read).with(4).and_return(0)
+    end
+
+    pin = Pin.new :pin => 4, :direction => :out, :invert => true
+    pin.off?.should == false    
+  end  
 
 end
