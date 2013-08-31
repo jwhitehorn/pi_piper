@@ -19,10 +19,10 @@ module PiPiper
 
     attach_function :init, :bcm2835_init, [], :uint8
     attach_function :close, :bcm2835_close, [], :uint8
-
-    attach_function :pin_set_pud,         :bcm2835_gpio_set_pud,     [:uint8, :uint8], :void
     
     #pin support...
+    attach_function :pin_set_pud,         :bcm2835_gpio_set_pud,     [:uint8, :uint8], :void
+    
     def self.pin_input(pin)
       File.open("/sys/class/gpio/export", "w") { |f| f.write("#{pin}") }
       File.open(direction_file, "w") { |f| f.write("in") }
@@ -31,6 +31,10 @@ module PiPiper
     def self.pin_output(pin)
       File.open("/sys/class/gpio/export", "w") { |f| f.write("#{pin}") }
       File.open(direction_file, "w") { |f| f.write("out") }
+    end
+    
+    def self.pin_read(pin)
+      File.read("/sys/class/gpio/gpio#{pin}/value").to_i
     end
 
     #SPI support...

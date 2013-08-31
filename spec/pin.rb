@@ -19,5 +19,13 @@ describe 'Pin' do
 
     Pin.new :pin => 4, :direction => :out
   end
+  
+  it "should read start value on construction" do
+    Platform.driver = StubDriver.new.tap do |d|
+      d.should_receive(:pin_read).with(4).and_return(0)
+    end
+
+    Pin.new :pin => 4, :direction => :out
+  end
 
 end
