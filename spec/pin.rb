@@ -25,7 +25,7 @@ describe 'Pin' do
       d.should_receive(:pin_read).with(4).and_return(0)
     end
 
-    Pin.new :pin => 4, :direction => :out
+    Pin.new :pin => 4, :direction => :in
   end
   
   it "should detect on?" do
@@ -33,7 +33,7 @@ describe 'Pin' do
       d.should_receive(:pin_read).with(4).and_return(1)
     end
 
-    pin = Pin.new :pin => 4, :direction => :out
+    pin = Pin.new :pin => 4, :direction => :in
     pin.on?.should == true
   end
   
@@ -42,7 +42,7 @@ describe 'Pin' do
       d.should_receive(:pin_read).with(4).and_return(0)
     end
 
-    pin = Pin.new :pin => 4, :direction => :out
+    pin = Pin.new :pin => 4, :direction => :in
     pin.off?.should == true
   end
   
@@ -51,7 +51,7 @@ describe 'Pin' do
       d.should_receive(:pin_read).with(4).and_return(1)
     end
 
-    pin = Pin.new :pin => 4, :direction => :out, :invert => true
+    pin = Pin.new :pin => 4, :direction => :in, :invert => true
     pin.on?.should == false    
   end
   
@@ -60,7 +60,7 @@ describe 'Pin' do
       d.should_receive(:pin_read).with(4).and_return(0)
     end
 
-    pin = Pin.new :pin => 4, :direction => :out, :invert => true
+    pin = Pin.new :pin => 4, :direction => :in, :invert => true
     pin.off?.should == false    
   end  
 
