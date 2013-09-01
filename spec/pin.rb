@@ -81,5 +81,23 @@ describe 'Pin' do
     pin = Pin.new :pin => 4, :direction => :out
     pin.off
   end
+  
+  it "shouldn't write high on direction in" do
+    Platform.driver = StubDriver.new.tap do |d|
+      d.stub(:pin_set) { fail }
+    end
+
+    pin = Pin.new :pin => 4, :direction => :in
+    pin.on    
+  end
+  
+  it "shouldn't write low on direction in" do
+    Platform.driver = StubDriver.new.tap do |d|
+      d.stub(:pin_set) { fail }
+    end
+
+    pin = Pin.new :pin => 4, :direction => :in
+    pin.off    
+  end
 
 end
