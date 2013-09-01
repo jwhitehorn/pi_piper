@@ -99,5 +99,18 @@ describe 'Pin' do
     pin = Pin.new :pin => 4, :direction => :in
     pin.off    
   end
+  
+  it "should detect high to low change" do
+    Platform.driver = StubDriver.new.tap do |d|
+      value = 1
+      d.stub(:pin_read) { value ^= 1 } #begins low, then high, low, high, low...
+    end
+
+    pin = Pin.new :pin => 4, :direction => :in
+    pin.off?.should == true
+    pin.read
+    pin.off?.should == false
+    pin.changed?.should == true
+  end
 
 end
