@@ -28,6 +28,10 @@ module PiPiper
       File.open("/sys/class/gpio/gpio#{pin}/direction", "w") { |f| f.write("in") }
     end
     
+    def self.pin_set(pin, value)
+      File.open("/sys/class/gpio/gpio#{pin}/value", 'w') {|f| f.write("#{value}") }
+    end
+    
     def self.pin_output(pin)
       File.open("/sys/class/gpio/export", "w") { |f| f.write("#{pin}") }
       File.open(direction_file, "w") { |f| f.write("out") }
