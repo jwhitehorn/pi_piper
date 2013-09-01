@@ -112,5 +112,9 @@ describe 'Pin' do
     pin.off?.should == false
     pin.changed?.should == true
   end
+  
+  it "should wait for change" do
+    fail
+  end
 
 end
