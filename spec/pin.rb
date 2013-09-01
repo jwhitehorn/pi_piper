@@ -72,5 +72,14 @@ describe 'Pin' do
     pin = Pin.new :pin => 4, :direction => :out
     pin.on
   end
+  
+  it "should write low" do
+    Platform.driver = StubDriver.new.tap do |d|
+      d.should_receive(:pin_set).with(4, 0)
+    end
+
+    pin = Pin.new :pin => 4, :direction => :out
+    pin.off
+  end
 
 end
