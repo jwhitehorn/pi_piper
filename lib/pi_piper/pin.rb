@@ -37,7 +37,7 @@ module PiPiper
     
     # If the pin has been initialized for output this method will set the logic level high.
     def on
-      File.open(value_file, 'w') {|f| f.write("1") } if direction == :out
+      Platform.driver.pin_set(pin, 1) if direction == :out
     end
     
     # Tests if the logic level is high.
@@ -47,7 +47,7 @@ module PiPiper
     
     # If the pin has been initialized for output this method will set the logic level low.
     def off
-      File.open(value_file, 'w') {|f| f.write("0") } if direction == :out
+      Platform.driver.pin_set(pin, 0) if direction == :out
     end
     
     # Tests if the logic level is low.
