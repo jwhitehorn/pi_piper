@@ -14,7 +14,7 @@ module PiPiper
   #   Options hash. Options include `:pin`, `:invert` and `:trigger`.
   # 
   def watch(options, &block)
-    Thread.new do
+    new_thread = Thread.new do
       pin = PiPiper::Pin.new(options)
       loop do
         pin.wait_for_change 
@@ -24,7 +24,9 @@ module PiPiper
           pin.instance_exec &block
         end
       end 
-    end.abort_on_exception = true  
+    end
+    new_thread.abort_on_exception = true
+    new_thread
   end
   
   #Defines an event block to be executed after a pin either goes high or low.
