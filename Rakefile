@@ -4,7 +4,8 @@ require 'echoe'
 require 'rake/testtask'
 
 #rake manifest
-#rake package && git checkout pi_piper.gemspec && rake release
+#rake build_gemspec
+#rake release
 
 Echoe.new('pi_piper', '2.0.beta.1') do |p|
   p.description     = "Event driven Raspberry Pi GPIO library"
