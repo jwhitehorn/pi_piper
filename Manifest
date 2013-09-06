@@ -6,7 +6,9 @@ Rakefile
 lib/pi_piper.rb
 lib/pi_piper/bcm2835.rb
 lib/pi_piper/frequency.rb
+lib/pi_piper/i2c.rb
 lib/pi_piper/libbcm2835.img
 lib/pi_piper/pin.rb
+lib/pi_piper/platform.rb
 lib/pi_piper/spi.rb
 pi_piper.gemspec
