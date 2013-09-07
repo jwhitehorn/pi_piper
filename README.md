@@ -1,5 +1,7 @@
 ## Overview
 
+[![Build Status](https://travis-ci.org/jwhitehorn/pi_piper.png)](https://travis-ci.org/jwhitehorn/pi_piper)
+
 Pi Piper brings event driven programming to the Raspberry Pi's GPIO pins. Pi Piper works with all revisions of the Raspberry Pi, 
 and has been tested with Ruby 1.9.3 & 2.0 under both [Raspbian "wheezy"](http://www.raspberrypi.org/downloads) and [Occidentalis v0.2](http://learn.adafruit.com/adafruit-raspberry-pi-educational-linux-distro/occidentalis-v0-dot-2).
 
