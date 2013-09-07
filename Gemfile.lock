@@ -9,6 +9,7 @@ GEM
       rake (>= 0.9.2)
       rdoc (>= 3.6.1)
       rubyforge (>= 2.0.4)
+    eventmachine (1.0.3)
     ffi (1.4.0)
     gemcutter (0.7.1)
     json_pure (1.7.7)
@@ -30,6 +31,7 @@ PLATFORMS
 
 DEPENDENCIES
   echoe
+  eventmachine (~> 1.0.3)
   ffi
   rake
   rspec
