@@ -48,6 +48,26 @@ module PiPiper
       end
     end
   end
+  
+  #Defines an event block to be called when SPI slave output meets certain characteristics. 
+  #The block will be passed the slave output.
+  #
+  # @param [Hash] options A hash of options.
+  # @option options [Fixnum] :every A frequency of time (in seconds) to poll the SPI slave.
+  # @option options [Fixnum] :slave The slave number to poll.
+  # @option options [Number|Array] :write Data to poll the SPI slave with. 
+  # @option options [Fixnum] :eq Tests for SPI slave output equality.
+  # @option options [Fixnum] :lt Tests for SPI slave output less than supplied value.
+  # @option options [Fixnum] :gt Tests for SPI slave output greater than supplied value.
+  def when_spi(options, &block)
+    poll_spi options do |value|
+      if     options[:eq] && value == options[:eq]
+          || options[:lt] && value < options[:lt]
+          || options[:gt] && value > options[:gt]
+          block.call value
+      end
+    end
+  end
 
   #Prevents the main thread from exiting. Required when using PiPiper.watch
   # @deprecated Please use EventMachine.run instead
