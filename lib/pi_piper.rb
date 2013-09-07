@@ -1,3 +1,4 @@
+require 'eventmachine'
 Dir[File.dirname(__FILE__) + '/pi_piper/*.rb'].each {|file| require file unless file.end_with?('bcm2835.rb') }
 
 module PiPiper
@@ -32,8 +33,24 @@ module PiPiper
     options[:trigger] = options.delete(:goes) == :high ? :rising : :falling
     watch options, &block
   end
+  
+  #Defines an event block to be called on a regular schedule. The block will be passed the slave output.
+  #
+  # @param [Hash] options A hash of options.
+  # @option options [Fixnum] :every A frequency of time (in seconds) to poll the SPI slave.
+  # @option options [Fixnum] :slave The slave number to poll.
+  # @option options [Number|Array] :write Data to poll the SPI slave with. 
+  def poll_spi(options, &block)
+    EM::PeriodicTimer.new(options[:every]) do
+      Spi.begin options[:slave] do
+        output = write options[:write]
+        block.call output
+      end
+    end
+  end
 
   #Prevents the main thread from exiting. Required when using PiPiper.watch
+  # @deprecated Please use EventMachine.run instead
   def wait
     loop do sleep 1 end
   end
