@@ -61,9 +61,9 @@ module PiPiper
   # @option options [Fixnum] :gt Tests for SPI slave output greater than supplied value.
   def when_spi(options, &block)
     poll_spi options do |value|
-      if     options[:eq] && value == options[:eq]
-          || options[:lt] && value < options[:lt]
-          || options[:gt] && value > options[:gt]
+      if (options[:eq] && value == options[:eq]) || 
+         (options[:lt] && value < options[:lt])  ||
+         (options[:gt] && value > options[:gt])
           block.call value
       end
     end
