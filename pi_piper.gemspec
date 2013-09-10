@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = "pi_piper"
-  s.version = "2.0.beta.2"
+  s.version = "2.0.beta.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jason Whitehorn"]
-  s.date = "2013-09-07"
+  s.date = "2013-09-10"
   s.description = "Event driven Raspberry Pi GPIO library"
   s.email = "jason.whitehorn@gmail.com"
   s.extra_rdoc_files = ["README.md", "lib/pi_piper.rb", "lib/pi_piper/bcm2835.rb", "lib/pi_piper/frequency.rb", "lib/pi_piper/i2c.rb", "lib/pi_piper/libbcm2835.img", "lib/pi_piper/pin.rb", "lib/pi_piper/platform.rb", "lib/pi_piper/spi.rb"]
@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Pi_piper", "--main", "README.md"]
   s.require_paths = ["lib"]
   s.rubyforge_project = "pi_piper"
-  s.rubygems_version = "2.0.3"
+  s.rubygems_version = "2.0.0"
   s.summary = "Event driven Raspberry Pi GPIO library"
 
   if s.respond_to? :specification_version then
