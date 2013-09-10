@@ -32,9 +32,9 @@ module PiPiper
       File.open("/sys/class/gpio/gpio#{pin}/value", 'w') {|f| f.write("#{value}") }
     end
     
-    def self.pin_output(pin)
+    def Bcm2835.pin_output(pin)
       File.open("/sys/class/gpio/export", "w") { |f| f.write("#{pin}") }
-      File.open(direction_file, "w") { |f| f.write("out") }
+      File.open("/sys/class/gpio/gpio#{pin}/direction", "w") { |f| f.write("out") }
     end
     
     def self.pin_read(pin)
@@ -54,11 +54,11 @@ module PiPiper
                     :bcm2835_spi_setChipSelectPolarity,              [:uint8, :uint8], :void
 
     #I2C support...
-    attach_function :i2c_begin,      :bcm2835_i2c_begin,             [], :void
-    attach_function :i2c_end,        :bcm2835_i2c_end,               [], :void
-    attach_function :i2c_write,      :bcm2835_i2c_write,             [:pointer, :uint], :uint8
-    attach_function :i2c_set_address,:bcm2835_i2c_setSlaveAddress,   [:uint8], :void
-    attach_function :i2c_set_clock_divider, :bcm2835_i2c_setClockDivider,     [:uint16], :void
+    #attach_function :i2c_begin,      :bcm2835_i2c_begin,             [], :void
+    #attach_function :i2c_end,        :bcm2835_i2c_end,               [], :void
+    #attach_function :i2c_write,      :bcm2835_i2c_write,             [:pointer, :uint], :uint8
+    #attach_function :i2c_set_address,:bcm2835_i2c_setSlaveAddress,   [:uint8], :void
+    #attach_function :i2c_set_clock_divider, :bcm2835_i2c_setClockDivider,     [:uint16], :void
 
     def self.i2c_allowed_clocks
       [100.kilohertz,
