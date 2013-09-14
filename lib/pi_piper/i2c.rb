@@ -43,6 +43,10 @@ module PiPiper
       Platform.driver.i2c_transfer_bytes data
     end
 
+    def read(bytes)
+      Platform.driver.i2c_read_bytes(bytes)
+    end
+
   end
 
 end
