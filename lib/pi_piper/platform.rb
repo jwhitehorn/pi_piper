@@ -1,4 +1,3 @@
-#require 'bcm2835.rb'
 module PiPiper
 
   #Hardware abstraction manager. Not intended for direct use.
