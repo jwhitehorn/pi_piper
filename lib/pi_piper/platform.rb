@@ -7,7 +7,7 @@ module PiPiper
     #gets the current platform driver. Defaults to BCM2835.
     def self.driver
       unless @@driver
-        #require 'bcm2835.rb'
+        require 'pi_piper/bcm2835'
         PiPiper::Bcm2835.init
         @@driver = PiPiper::Bcm2835
         at_exit { Bcm2835.close }
