@@ -15,41 +15,50 @@ module PiPiper
     # @option options [Boolean] :invert Indicates if the value read from the physical pin should be inverted. Defaults to false.
     # @option options [Symbol] :trigger Indicates when the wait_for_change method will detect a change, either :rising, :falling, or :both edge triggers. Defaults to :both.
     # @option options [Symbol] :pull Indicates if and how pull mode must be set when pin direction is set to :in. Either :up, :down or :offing. Defaults to :off.
+    #
     def initialize(options)
-      options = {:direction => :in, :invert => false, :trigger => :both, :pull => :off}.merge options
-      @pin = options[:pin]
+      options = { :direction => :in,
+                  :invert => false,
+                  :trigger => :both,
+                  :pull => :off}.merge(options)
+
+      @pin       = options[:pin]
       @direction = options[:direction]
-      @invert = options[:invert]
-      @trigger = options[:trigger]
-      @pull = options[:pull]
+      @invert    = options[:invert]
+      @trigger   = options[:trigger]
+      @pull      = options[:pull]
 
       raise "Invalid pull mode. Options are :up, :down or :float (default)" unless [:up, :down, :float, :off].include? @pull
       raise "Unable to use pull-ups : pin direction must be ':in' for this" if @direction != :in && [:up, :down].include?(@pull)
       raise "Invalid direction. Options are :in or :out" unless [:in, :out].include? @direction
       raise "Invalid trigger. Options are :rising, :falling, or :both" unless [:rising, :falling, :both].include? @trigger
 
-      @direction == :out ? Platform.driver.pin_output(@pin) : Platform.driver.pin_input(@pin)
+      if @direction == :out
+        Platform.driver.pin_output(@pin)
+      else
+        Platform.driver.pin_input(@pin)
+      end
 
       pull!(@pull)
 
       read
     end
-    
+
     # If the pin has been initialized for output this method will set the logic level high.
     def on
       Platform.driver.pin_set(pin, 1) if direction == :out
     end
-    
+
     # Tests if the logic level is high.
     def on?
       not off?
     end
-    
+
     # If the pin has been initialized for output this method will set the logic level low.
     def off
       Platform.driver.pin_set(pin, 0) if direction == :out
     end
-    
+
     # Tests if the logic level is low.
     def off?
       value == 0
@@ -62,11 +71,11 @@ module PiPiper
     end
 
     # When the pin has been initialized in input mode, internal resistors can be pulled up or down (respectively with :up and :down).
-    # Pulling an input pin wil prevent noise from triggering it when the input is floating. 
+    # Pulling an input pin wil prevent noise from triggering it when the input is floating.
     # For instance when nothing is plugged in, pulling the pin-up will make subsequent value readings to return 'on' (or high, or 1...).
     # @param [Symbol] state Indicates if and how pull mode must be set when pin direction is set to :in. Either :up, :down or :offing. Defaults to :off.
     def pull!(state)
-      return nil unless @direction == :in
+      return nil if @direction != :in
       @pull = case state
               when :up then GPIO_PUD_UP
               when :down then GPIO_PUD_DOWN
@@ -100,7 +109,7 @@ module PiPiper
       loop do
         fd.read
         IO.select(nil, nil, [fd], nil)
-        read 
+        read
         if changed?
           next if @trigger == :rising and value == 0
           next if @trigger == :falling and value == 1
@@ -109,14 +118,14 @@ module PiPiper
       end
     end
 
-    # Reads the current value from the pin. Without calling this method first, `value`, `last_value` and `changed?` will not be updated. 
+    # Reads the current value from the pin. Without calling this method first, `value`, `last_value` and `changed?` will not be updated.
     # In short, you must call this method if you are curious about the current state of the pin.
-    def read 
+    def read
       @last_value = @value
       val = Platform.driver.pin_read(@pin)
       @value = invert ? (val ^ 1) : val
     end
-    
+
     private
     def value_file
       "/sys/class/gpio/gpio#{pin}/value"
@@ -129,6 +138,6 @@ module PiPiper
     def direction_file
       "/sys/class/gpio/gpio#{pin}/direction"
     end
-  
+
   end
 end
