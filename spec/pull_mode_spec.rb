@@ -45,7 +45,7 @@ describe 'Pi_Piper' do
       @pin = PiPiper::Pin.new(:pin => 17, :direction => :in, :pull => :down)
     end
 
-    it "must respond LOW when flaoting pins are checked" do
+    it 'must respond LOW when floating pins are checked' do
       @pin.off?.should be_true
     end
   end

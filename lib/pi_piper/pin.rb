@@ -1,11 +1,11 @@
+require_relative 'pin_values'
+
 module PiPiper
   # Represents a GPIO pin on the Raspberry Pi
   class Pin
-    GPIO_PUD_OFF = 0
-    GPIO_PUD_DOWN = 1
-    GPIO_PUD_UP = 2
+    include PiPiper::PinValues
 
-    attr_reader :pin, :last_value, :value, :direction, :invert
+    attr_reader :pin, :last_value, :direction, :invert
 
     #Initializes a new GPIO pin.
     #
@@ -46,7 +46,7 @@ module PiPiper
 
     # If the pin has been initialized for output this method will set the logic level high.
     def on
-      Platform.driver.pin_set(pin, 1) if direction == :out
+      Platform.driver.pin_set(pin, GPIO_HIGH) if direction == :out
     end
 
     # Tests if the logic level is high.
@@ -56,19 +56,24 @@ module PiPiper
 
     # If the pin has been initialized for output this method will set the logic level low.
     def off
-      Platform.driver.pin_set(pin, 0) if direction == :out
+      Platform.driver.pin_set(pin, GPIO_LOW) if direction == :out
     end
 
     # Tests if the logic level is low.
     def off?
-      value == 0
+      value == GPIO_LOW
+    end
+
+    def value
+      @value ||= read
     end
 
     # If the pin has been initialized for output this method will either raise or lower the logic level depending on `new_value`.
     # @param [Object] new_value If false or 0 the pin will be set to off, otherwise on.
     def update_value(new_value)
-      !new_value || new_value == 0 ? off : on
+      !new_value || new_value == GPIO_LOW ? off : on
     end
+    alias_method :value=, :update_value
 
     # When the pin has been initialized in input mode, internal resistors can be pulled up or down (respectively with :up and :down).
     # Pulling an input pin wil prevent noise from triggering it when the input is floating.

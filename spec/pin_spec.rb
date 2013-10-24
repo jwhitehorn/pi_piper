@@ -1,5 +1,4 @@
-require '../pi_piper/lib/pi_piper.rb'
-require 'stub_driver.rb'
+require 'spec_helper'
 include PiPiper
 
 describe 'Pin' do
