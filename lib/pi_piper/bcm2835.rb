@@ -32,13 +32,18 @@ module PiPiper
       File.open("/sys/class/gpio/gpio#{pin}/value", 'w') {|f| f.write("#{value}") }
     end
     
-    def Bcm2835.pin_output(pin)
+    def self.pin_output(pin)
       File.open("/sys/class/gpio/export", "w") { |f| f.write("#{pin}") }
       File.open("/sys/class/gpio/gpio#{pin}/direction", "w") { |f| f.write("out") }
     end
     
     def self.pin_read(pin)
       File.read("/sys/class/gpio/gpio#{pin}/value").to_i
+    end
+
+    #TODO This does not work for some reason.
+    def self.ada_spi_out(array)
+      File.open('/dev/spidev0.0', 'w'){|f| f.write(array.pack('C*')) }
     end
 
     #SPI support...

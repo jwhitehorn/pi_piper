@@ -6,7 +6,7 @@ describe StubDriver do
 
   before do
     @logger = double()
-    @logger_driver = StubDriver.new(:logger => @logger)
+    @driver = StubDriver.new(:logger => @logger)
   end
 
   describe '#pin_input' do
@@ -18,7 +18,7 @@ describe StubDriver do
 
     it 'should log that pin is set' do
       @logger.expects(:debug).with('Pin #10 -> Input')
-      @logger_driver.pin_input(10)
+      @driver.pin_input(10)
     end
 
   end
@@ -32,7 +32,7 @@ describe StubDriver do
 
     it 'should log that pin is set' do
       @logger.expects(:debug).with('Pin #10 -> Output')
-      @logger_driver.pin_output(10)
+      @driver.pin_output(10)
     end
 
   end
@@ -46,7 +46,7 @@ describe StubDriver do
 
     it 'should log the new pin value' do
       @logger.expects(:debug).with('Pin #21 -> 22')
-      @logger_driver.pin_set(21, 22)
+      @driver.pin_set(21, 22)
     end
 
   end
@@ -65,7 +65,45 @@ describe StubDriver do
 
     it 'should log the new pin value' do
       @logger.expects(:debug).with('PinPUD #21 -> 22')
-      @logger_driver.pin_set_pud(21, 22)
+      @driver.pin_set_pud(21, 22)
+    end
+  end
+
+  describe '#ada_spi_out' do
+    it "should log the array sent to ada_spi_out" do
+      @logger.expects(:debug).with("Ada SPI -> \u0000\u0001\u0002")
+      @driver.ada_spi_out([0x00,0x01,0x02])
+    end
+  end
+
+  describe '#spi_begin' do
+    it 'should should clear spi data' do
+      @logger.expects(:debug)
+      @driver.spi_transfer_bytes([0x01,0x02])
+      @logger.expects(:debug).with("SPI Begin")
+      @driver.spi_begin
+      @driver.send(:spi_data).should == []
+    end
+  end
+
+  describe '#spi_transfer_bytes' do
+    it 'should log and store sent data' do
+      @logger.expects(:debug).with("SPI CS0 <- [1, 2, 3]")
+      @driver.spi_transfer_bytes([0x01, 0x02, 0x03])
+      @driver.send(:spi_data).should == [0x01, 0x02, 0x03]
+    end
+  end
+
+  describe '#spi_chip_select' do
+    it 'should return default 0 if nothing provided' do
+      @logger.expects(:debug).with("SPI Chip Select = 0")
+      @driver.spi_chip_select.should == 0
+    end
+
+    it 'should set chip select value if passed in' do
+      @logger.expects(:debug).with("SPI Chip Select = 3").twice
+      @driver.spi_chip_select(3)
+      @driver.spi_chip_select.should == 3
     end
   end
 

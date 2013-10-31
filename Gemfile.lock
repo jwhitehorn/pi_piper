@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    pi_piper (2.0.beta.4)
+    pi_piper (2.0.beta.11)
       eventmachine (= 1.0.3)
       ffi
 
