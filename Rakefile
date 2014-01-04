@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'rake'
 require 'echoe'
-require 'rake/testtask'
+require 'rspec/core/rake_task'
 
 #rake manifest
 #rake build_gemspec
@@ -19,6 +19,6 @@ end
 
 Dir["#{File.dirname(__FILE__)}/tasks/*.rake"].sort.each { |ext| load ext }
 
-Rake::TestTask.new do |t|
-    t.pattern = 'spec/**/*_spec.rb'
-end
+RSpec::Core::RakeTask.new(:spec)
+
+task :default => :spec

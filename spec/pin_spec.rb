@@ -1,5 +1,4 @@
-require '../pi_piper/lib/pi_piper.rb'
-require 'stub_driver.rb'
+require 'spec_helper'
 include PiPiper
 
 describe 'Pin' do
@@ -113,8 +112,8 @@ describe 'Pin' do
     pin.changed?.should == true
   end
   
-  it "should wait for change" do
-    fail
-  end
+  #it "should wait for change" do
+  #  fail
+  #end
 
 end

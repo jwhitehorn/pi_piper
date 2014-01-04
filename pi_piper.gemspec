@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = "pi_piper"
-  s.version = "2.0.beta.4"
+  s.version = "2.0.beta.11"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jason Whitehorn"]
@@ -18,10 +18,10 @@ Gem::Specification.new do |s|
   s.rubygems_version = "2.0.0"
   s.summary = "Event driven Raspberry Pi GPIO library"
 
-  if s.respond_to? :specification_version then
+  if s.respond_to? :specification_version
     s.specification_version = 4
 
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0')
       s.add_runtime_dependency(%q<ffi>, [">= 0"])
       s.add_runtime_dependency(%q<eventmachine>, ["= 1.0.3"])
     else
@@ -32,4 +32,8 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<ffi>, [">= 0"])
     s.add_dependency(%q<eventmachine>, ["= 1.0.3"])
   end
+
+  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'mocha'
+  s.add_development_dependency 'simplecov'
 end
