@@ -45,6 +45,12 @@ module PiPiper
     # No CS, control it yourself
     CHIP_SELECT_NONE = 3
 
+    # SPI Modes
+    SPI_MODE0 = 0
+    SPI_MODE1 = 1
+    SPI_MODE2 = 2
+    SPI_MODE3 = 3 
+
     #Sets the SPI mode. Defaults to mode (0,0).
     def self.set_mode(cpol, cpha)
       mode = SPI_MODE0 #default
@@ -123,8 +129,8 @@ module PiPiper
     # @yield 
     # @param [optional, CHIP_SELECT_*] chip the chip select line options
     def chip_select(chip=CHIP_SELECT_0)
-      chip = @chip if @chip 
-      Platform.driver.spi_chip_select(chip)
+      chip = @chip if @chip
+      Platform.driver.spi_chip_select(chip) 
       if block_given?
         begin
           yield
