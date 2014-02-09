@@ -69,10 +69,10 @@ describe StubDriver do
     end
   end
 
-  describe '#ada_spi_out' do
+  describe '#spidev_out' do
     it "should log the array sent to ada_spi_out" do
-      @logger.expects(:debug).with("Ada SPI -> \u0000\u0001\u0002")
-      @driver.ada_spi_out([0x00,0x01,0x02])
+      @logger.expects(:debug).with("SPIDEV -> \u0000\u0001\u0002")
+      @driver.spidev_out([0x00,0x01,0x02])
     end
   end
 
