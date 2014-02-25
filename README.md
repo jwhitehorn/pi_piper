@@ -65,6 +65,8 @@ sleep 1
 pin.off
 ```
 
+_please note, in the above context "pin" refers to the GPIO number of the Raspberry Pi._
+
 ### SPI
 Starting with version 1.2, Pi Piper offers SPI support. 
 
