@@ -41,9 +41,9 @@ module PiPiper
       File.read("/sys/class/gpio/gpio#{pin}/value").to_i
     end
 
-    #TODO This does not work for some reason.
-    def self.ada_spi_out(array)
-      File.open('/dev/spidev0.0', 'w'){|f| f.write(array.pack('C*')) }
+    #NOTE to use: chmod 666 /dev/spidev0.0
+    def self.spidev_out(array)
+      File.open('/dev/spidev0.0', 'wb'){|f| f.write(array.pack('C*')) }
     end
 
     #SPI support...

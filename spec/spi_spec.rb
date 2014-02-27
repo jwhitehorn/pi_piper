@@ -34,4 +34,13 @@ describe 'Spi' do
       Spi.set_mode(1, 1)
     end
   end
+
+  describe '#spidev_out' do
+    it 'should attempt to write data to spi' do
+      driver = StubDriver.new
+      expect(driver).to receive(:spidev_out).with([0,1,2,3,4,5])
+      Platform.driver = driver
+      Spi.spidev_out([0,1,2,3,4,5])
+    end
+  end
 end

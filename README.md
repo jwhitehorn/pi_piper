@@ -2,15 +2,15 @@
 
 [![Build Status](https://travis-ci.org/jwhitehorn/pi_piper.png)](https://travis-ci.org/jwhitehorn/pi_piper)
 
-Pi Piper brings event driven programming to the Raspberry Pi's GPIO pins. Pi Piper works with all revisions of the Raspberry Pi, 
+Pi Piper brings event driven programming to the Raspberry Pi's GPIO pins. Pi Piper works with all revisions of the Raspberry Pi,
 and has been tested with Ruby 1.9.3 & 2.0 under both [Raspbian "wheezy"](http://www.raspberrypi.org/downloads) and [Occidentalis v0.2](http://learn.adafruit.com/adafruit-raspberry-pi-educational-linux-distro/occidentalis-v0-dot-2).
 
 To get started:
 
 If you do not already have Ruby installed, first you'll need to:
-    
+
     sudo apt-get install ruby ruby1.9.1-dev
-    
+
 Despite one of the packages being titled "ruby1.9.1-dev", the above command will install Ruby 1.9.3 (as of January 2013) and the Ruby dev tools.
 
 To install Pi Piper:
@@ -40,7 +40,7 @@ PiPiper.wait
 
 Your block will be called when a change to the pin's state is detected.
 
-When using pins as input, you can use internal resistors to pull the pin 
+When using pins as input, you can use internal resistors to pull the pin
 up or pull down. This is important if you use open-collector sensors
 which have floating output in some states.
 
@@ -68,13 +68,22 @@ pin.off
 _please note, in the above context "pin" refers to the GPIO number of the Raspberry Pi._
 
 ### SPI
-Starting with version 1.2, Pi Piper offers SPI support. 
+Starting with version 1.2, Pi Piper offers SPI support.
 
 ```ruby
-PiPiper::Spi.begin do 
-  puts write [0x01, 0x80, 0x00] 
+PiPiper::Spi.begin do
+  puts write [0x01, 0x80, 0x00]
 end
 ```
+
+If you are using an operating system that supports `/dev/spidev0.0` like the [adafruit
+distro][adafruit-linux] you can also write to the spi using `PiPiper::Spi.spidev_out`
+
+```ruby
+# Example writing red, green, blue to a string of WS2801 pixels
+PiPiper::Spi.spidev_out([255,0,0,0,255,0,0,0,255])
+```
+[adafruit-linux]:http://learn.adafruit.com/adafruit-raspberry-pi-educational-linux-distro/overview
 
 ## Documentation
 
@@ -91,7 +100,7 @@ Looking for more examples/sample code for Pi Piper? Then check out the following
 
 ## License
 
-Copyright (c) 2013, [Jason Whitehorn](https://github.com/jwhitehorn) 
+Copyright (c) 2013, [Jason Whitehorn](https://github.com/jwhitehorn)
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:

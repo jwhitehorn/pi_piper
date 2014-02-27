@@ -78,6 +78,18 @@ module PiPiper
       Platform.driver.spi_end
     end
 
+    # Uses /dev/spidev0.0 to write to the SPI
+    # NOTE: Requires that you have /dev/spidev0.0
+    #  see: http://learn.adafruit.com/adafruit-raspberry-pi-educational-linux-distro/overview
+    #  most likely requires `chmod 666 /dev/spidev0.0`
+    #
+    # @example Writing red, green, blue to a string of WS2801 pixels
+    #   PiPiper::Spi.spidev_out([255,0,0,0,255,0,0,0,255])
+    #
+    def self.spidev_out(array)
+      Platform.driver.spidev_out(array)
+    end
+
     # Sets the SPI clock frequency
     def clock(frequency)
       options = {4000     => 0,      #4 kHz

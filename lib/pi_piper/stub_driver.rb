@@ -49,10 +49,9 @@ module PiPiper
       @logger.debug("PinPUD ##{pin_number} -> #{value}")
     end
 
-    #TODO This does not work for some reason
-    def ada_spi_out(array)
+    def spidev_out(array)
       @spi[:data] = array
-      @logger.debug("Ada SPI -> #{array.pack('C*')}")
+      @logger.debug("SPIDEV -> #{array.pack('C*')}")
     end
 
     def spi_begin
