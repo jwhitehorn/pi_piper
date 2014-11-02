@@ -3,6 +3,8 @@ require 'ffi'
 module PiPiper
   # The Bcm2835 module is not intended to be directly called.
   # It serves as an FFI library for PiPiper::SPI & PiPiper::I2C.
+  #
+  # See http://www.airspayce.com/mikem/bcm2835/bcm2835_8h_source.html
   module Bcm2835
     extend FFI::Library
     ffi_lib File.dirname(__FILE__) + '/libbcm2835.img'
@@ -21,24 +23,56 @@ module PiPiper
     attach_function :close, :bcm2835_close, [], :uint8
     
     #pin support...
-    attach_function :pin_set_pud,         :bcm2835_gpio_set_pud,     [:uint8, :uint8], :void
+
+    # Sets the Pull-up/down mode for the specified pin.
+    attach_function :gpio_set_pud,         :bcm2835_gpio_set_pud, [:uint8, :uint8], :void
+
+    # Sets the Function Select register for the given pin, which configures the pin as Input, Output or one of the 6 alternate functions.
+    attach_function :gpio_select_function, :bcm2835_gpio_fsel,    [:uint8, :uint8], :void
+    attach_function :gpio_set,             :bcm2835_gpio_set,     [:uint8], :void
+    attach_function :gpio_clear,           :bcm2835_gpio_clr,     [:uint8], :void
+    attach_function :gpio_level,           :bcm2835_gpio_lev,     [:uint8], :uint8
     
+    # Set the given pin as input.
+    #
+    # @param pin [Integer]
     def self.pin_input(pin)
-      File.open("/sys/class/gpio/export", "w") { |f| f.write("#{pin}") }
-      File.open("/sys/class/gpio/gpio#{pin}/direction", "w") { |f| f.write("in") }
+      self.gpio_select_function(pin, PinValues::GPIO_FSEL_INPT)
     end
     
-    def self.pin_set(pin, value)
-      File.open("/sys/class/gpio/gpio#{pin}/value", 'w') {|f| f.write("#{value}") }
-    end
-    
+    # Set the given pin as output.
+    #
+    # @param pin [Integer]
     def self.pin_output(pin)
-      File.open("/sys/class/gpio/export", "w") { |f| f.write("#{pin}") }
-      File.open("/sys/class/gpio/gpio#{pin}/direction", "w") { |f| f.write("out") }
+      self.gpio_select_function(pin, PinValues::GPIO_FSEL_OUTP)
+    end
+
+    # Sets the Pull-up/down register for the given pin.
+    #
+    # @param pin [Integer]
+    # @param value [Integer]
+    def self.pin_set_pud(pin, value)
+      self.gpio_set_pud(pin, value)
+    end
+    
+    # Set the given pin to the given value.
+    #
+    # @param pin [Integer]
+    # @param value [GPIO_HIGH, GPIO_LOW]
+    # 
+    # @return [GPIO_HIGH, GPIO_LOW]
+    def self.pin_set(pin, value)
+      if value == 0
+        self.gpio_clear(pin)
+      else
+        self.gpio_set(pin)
+      end
+
+      value
     end
     
     def self.pin_read(pin)
-      File.read("/sys/class/gpio/gpio#{pin}/value").to_i
+      self.gpio_level(pin) == PinValues::GPIO_HIGH
     end
 
     #NOTE to use: chmod 666 /dev/spidev0.0
