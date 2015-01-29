@@ -7,6 +7,10 @@ module PiPiper
 
     attr_reader :pin, :last_value, :direction, :invert
 
+    def self.release(pin)
+      proc{ Platform.driver.pin_release(pin) }
+    end
+
     #Initializes a new GPIO pin.
     #
     # @param [Hash] options A hash of options
@@ -32,6 +36,8 @@ module PiPiper
       raise "Unable to use pull-ups : pin direction must be ':in' for this" if @direction != :in && [:up, :down].include?(@pull)
       raise "Invalid direction. Options are :in or :out" unless [:in, :out].include? @direction
       raise "Invalid trigger. Options are :rising, :falling, or :both" unless [:rising, :falling, :both].include? @trigger
+
+      ObjectSpace.define_finalizer(self, self.class.release(@pin))
 
       if @direction == :out
         Platform.driver.pin_output(@pin)
