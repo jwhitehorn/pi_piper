@@ -41,6 +41,10 @@ module PiPiper
       File.read("/sys/class/gpio/gpio#{pin}/value").to_i
     end
 
+    def self.pin_release(pin)
+      File.open("/sys/class/gpio/unexport", "w") { |f| f.write("#{pin}") }
+    end
+
     #NOTE to use: chmod 666 /dev/spidev0.0
     def self.spidev_out(array)
       File.open('/dev/spidev0.0', 'wb'){|f| f.write(array.pack('C*')) }
