@@ -7,6 +7,8 @@ module PiPiper
     extend FFI::Library
     ffi_lib File.dirname(__FILE__) + '/libbcm2835.img'
 
+    @@pins = []
+
     SPI_MODE0 = 0
     SPI_MODE1 = 1
     SPI_MODE2 = 2
@@ -25,6 +27,7 @@ module PiPiper
     
     def self.pin_input(pin)
       File.open("/sys/class/gpio/export", "w") { |f| f.write("#{pin}") }
+      @@pins << pin
       File.open("/sys/class/gpio/gpio#{pin}/direction", "w") { |f| f.write("in") }
     end
     
@@ -34,11 +37,20 @@ module PiPiper
     
     def self.pin_output(pin)
       File.open("/sys/class/gpio/export", "w") { |f| f.write("#{pin}") }
+      @@pins << pin
       File.open("/sys/class/gpio/gpio#{pin}/direction", "w") { |f| f.write("out") }
     end
     
     def self.pin_read(pin)
       File.read("/sys/class/gpio/gpio#{pin}/value").to_i
+    end
+
+    def self.release_pins
+      temp = @@pins.dup
+      temp.uniq.each do |pin|
+        File.open("/sys/class/gpio/unexport", "w") { |f| f.write("#{pin}") }
+        @@pins -= [pin]
+      end
     end
 
     #NOTE to use: chmod 666 /dev/spidev0.0
