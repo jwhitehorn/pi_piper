@@ -10,7 +10,8 @@ Gem::Specification.new do |s|
   s.description = "Event driven Raspberry Pi GPIO library"
   s.email = "jason.whitehorn@gmail.com"
   s.extra_rdoc_files = ["README.md", "lib/pi_piper.rb", "lib/pi_piper/bcm2835.rb", "lib/pi_piper/frequency.rb", "lib/pi_piper/i2c.rb", "lib/pi_piper/libbcm2835.img", "lib/pi_piper/pin.rb", "lib/pi_piper/platform.rb", "lib/pi_piper/spi.rb"]
-  s.files = ["Gemfile", "Gemfile.lock", "Manifest", "README.md", "Rakefile", "lib/pi_piper.rb", "lib/pi_piper/bcm2835.rb", "lib/pi_piper/frequency.rb", "lib/pi_piper/i2c.rb", "lib/pi_piper/libbcm2835.img", "lib/pi_piper/pin.rb", "lib/pi_piper/platform.rb", "lib/pi_piper/spi.rb", "pi_piper.gemspec"]
+  s.files         = `git ls-files -z`.split("\x0")
+  s.test_files    = s.files.grep(%r{^(test|spec|features)/})
   s.homepage = "http://github.com/jwhitehorn/pi_piper"
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Pi_piper", "--main", "README.md"]
   s.require_paths = ["lib"]
