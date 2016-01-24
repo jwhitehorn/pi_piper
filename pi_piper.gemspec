@@ -24,14 +24,14 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0')
       s.add_runtime_dependency(%q<ffi>, [">= 0"])
-      s.add_runtime_dependency(%q<eventmachine>, ["= 1.0.3"])
+      s.add_runtime_dependency(%q<eventmachine>, ["= 1.0.9"])
     else
       s.add_dependency(%q<ffi>, [">= 0"])
-      s.add_dependency(%q<eventmachine>, ["= 1.0.3"])
+      s.add_dependency(%q<eventmachine>, ["= 1.0.9"])
     end
   else
     s.add_dependency(%q<ffi>, [">= 0"])
-    s.add_dependency(%q<eventmachine>, ["= 1.0.3"])
+    s.add_dependency(%q<eventmachine>, ["= 1.0.9"])
   end
 
   s.add_development_dependency 'rspec'
