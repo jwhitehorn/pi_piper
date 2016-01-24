@@ -2,118 +2,118 @@ require 'spec_helper'
 include PiPiper
 
 describe 'Pin' do
-
-  it "should export pin for input" do
+  it 'should export pin for input' do
     Platform.driver = StubDriver.new.tap do |d|
-      d.should_receive(:pin_input).with(4)
+      expect(d).to receive(:pin_input).with(4)
     end
 
-    Pin.new :pin => 4, :direction => :in
+    Pin.new pin: 4, direction: :in
   end
-  
-  it "should export pin for output" do
+
+  it 'should export pin for output' do
     Platform.driver = StubDriver.new.tap do |d|
-      d.should_receive(:pin_output).with(4)
+      expect(d).to receive(:pin_output).with(4)
     end
 
-    Pin.new :pin => 4, :direction => :out
+    Pin.new pin: 4, direction: :out
   end
-  
-  it "should read start value on construction" do
+
+  it 'should read start value on construction' do
     Platform.driver = StubDriver.new.tap do |d|
-      d.should_receive(:pin_read).with(4).and_return(0)
+      expect(d).to receive(:pin_read).with(4).and_return(0)
     end
 
-    Pin.new :pin => 4, :direction => :in
+    Pin.new pin: 4, direction: :in
   end
-  
-  it "should detect on?" do
+
+  it 'should detect on?' do
     Platform.driver = StubDriver.new.tap do |d|
-      d.should_receive(:pin_read).with(4).and_return(1)
+      expect(d).to receive(:pin_read).with(4).and_return(1)
     end
 
-    pin = Pin.new :pin => 4, :direction => :in
-    pin.on?.should == true
+    pin = Pin.new pin: 4, direction: :in
+    expect(pin.on?).to be(true)
   end
-  
-  it "should detect off?" do
+
+  it 'should detect off?' do
     Platform.driver = StubDriver.new.tap do |d|
-      d.should_receive(:pin_read).with(4).and_return(0)
+      expect(d).to receive(:pin_read).with(4).and_return(0)
     end
 
-    pin = Pin.new :pin => 4, :direction => :in
-    pin.off?.should == true
+    pin = Pin.new pin: 4, direction: :in
+    expect(pin.off?).to be(true)
   end
-  
-  it "should invert true" do
+
+  it 'should invert true' do
     Platform.driver = StubDriver.new.tap do |d|
-      d.should_receive(:pin_read).with(4).and_return(1)
+      expect(d).to receive(:pin_read).with(4).and_return(1)
     end
 
-    pin = Pin.new :pin => 4, :direction => :in, :invert => true
-    pin.on?.should == false    
+    pin = Pin.new pin: 4, direction: :in, invert: true
+    expect(pin.on?).to be(false)
   end
-  
-  it "should invert true" do
+
+  it 'should invert true' do
     Platform.driver = StubDriver.new.tap do |d|
-      d.should_receive(:pin_read).with(4).and_return(0)
+      expect(d).to receive(:pin_read).with(4).and_return(0)
     end
 
-    pin = Pin.new :pin => 4, :direction => :in, :invert => true
-    pin.off?.should == false    
-  end  
-  
-  it "should write high" do
+    pin = Pin.new pin: 4, direction: :in, invert: true
+    expect(pin.off?).to be(false)
+  end
+
+  it 'should write high' do
     Platform.driver = StubDriver.new.tap do |d|
-      d.should_receive(:pin_set).with(4, 1)
+      expect(d).to receive(:pin_set).with(4, 1)
     end
 
-    pin = Pin.new :pin => 4, :direction => :out
+    pin = Pin.new pin: 4, direction: :out
     pin.on
   end
-  
-  it "should write low" do
+
+  it 'should write low' do
     Platform.driver = StubDriver.new.tap do |d|
-      d.should_receive(:pin_set).with(4, 0)
+      expect(d).to receive(:pin_set).with(4, 0)
     end
 
-    pin = Pin.new :pin => 4, :direction => :out
+    pin = Pin.new pin: 4, direction: :out
     pin.off
   end
-  
-  it "shouldn't write high on direction in" do
+
+  it 'should not write high on direction in' do
     Platform.driver = StubDriver.new.tap do |d|
-      d.stub(:pin_set) { fail }
+      expect(d).not_to receive(:pin_set)
     end
 
-    pin = Pin.new :pin => 4, :direction => :in
-    pin.on    
+    pin = Pin.new pin: 4, direction: :in
+    pin.on
   end
-  
-  it "shouldn't write low on direction in" do
+
+  it 'should not write low on direction in' do
     Platform.driver = StubDriver.new.tap do |d|
-      d.stub(:pin_set) { fail }
+      expect(d).not_to receive(:pin_set)
     end
 
-    pin = Pin.new :pin => 4, :direction => :in
-    pin.off    
+    pin = Pin.new pin: 4, direction: :in
+    pin.off
   end
-  
-  it "should detect high to low change" do
+
+  it 'should detect high to low change' do
     Platform.driver = StubDriver.new.tap do |d|
       value = 1
-      d.stub(:pin_read) { value ^= 1 } #begins low, then high, low, high, low...
+      # begins low, then high, low, high, low...
+      allow(d).to receive(:pin_read) { value ^= 1 }
     end
 
-    pin = Pin.new :pin => 4, :direction => :in
-    pin.off?.should == true
+    pin = Pin.new pin: 4, direction: :in
+    expect(pin.off?).to be(true)
     pin.read
-    pin.off?.should == false
-    pin.changed?.should == true
+    expect(pin.off?).to be(false)
+    expect(pin.changed?).to be(true)
   end
   
-  #it "should wait for change" do
-  #  fail
-  #end
+  xit 'should wait for change' do
+    pending
+  end
 
 end

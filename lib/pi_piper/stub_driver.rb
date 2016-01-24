@@ -70,7 +70,6 @@ module PiPiper
       @spi[:chip_select] = chip
     end
 
-
     def pin_read(pin_number)
       val = pin(pin_number)[:value]
       val ||= case pin(pin_number)[:pud]
@@ -81,7 +80,7 @@ module PiPiper
     end
 
     def method_missing(meth, *args, &block)
-      puts("Needs Implementation: StubDriver##{meth}")
+      puts "Needs Implementation: StubDriver##{meth}"
     end
 
     private
