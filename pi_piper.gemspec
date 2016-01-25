@@ -34,7 +34,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<eventmachine>, ["= 1.0.3"])
   end
 
-  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'rspec', '~> 3.0'
   s.add_development_dependency 'mocha'
   s.add_development_dependency 'simplecov'
 end
