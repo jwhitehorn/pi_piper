@@ -28,7 +28,6 @@ module PiPiper
 
     def self.clock=(clock)
       valid_clocks = Platform.driver.i2c_allowed_clocks
-
       raise "Invalid clock rate. Valid clocks are 100 kHz, 399.3610 kHz, 1.666 MHz and 1.689 MHz" unless valid_clocks.include? clock
 
       Platform.driver.i2c_set_clock clock
