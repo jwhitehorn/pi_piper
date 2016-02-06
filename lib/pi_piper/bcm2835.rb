@@ -5,7 +5,7 @@ module PiPiper
   # It serves as an FFI library for PiPiper::SPI & PiPiper::I2C.
   module Bcm2835
     extend FFI::Library
-    ffi_lib File.dirname(__FILE__) + '/libbcm2835.img'
+    ffi_lib File.dirname(__FILE__) + '/libbcm2835.so'
 
     SPI_MODE0 = 0
     SPI_MODE1 = 1

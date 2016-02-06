@@ -98,6 +98,23 @@ Looking for more examples/sample code for Pi Piper? Then check out the following
 * [Project 3: 2-bit counter](https://github.com/jwhitehorn/pi_piper/wiki/Project-3:-2-bit-counter)
 * [Project 4: MCP3008](https://github.com/jwhitehorn/pi_piper/wiki/Project-4:-MCP3008)
 
+## Under the hood
+
+PiPiper use the libbcm2835 library from Mike McCauley at airspayce.
+
+http://www.airspayce.com/mikem/bcm2835/index.html
+
+if you want to upgrade or downgrade the library for compatibility reason, get it and make it a shared object library :
+
+```script
+wget http://www.airspayce.com/mikem/bcm2835/bcm2835-1.49.tar.gz
+tar zxvf bcm2835-1.49.tar.gz && cd bcm2835-1.49
+./configure && make
+sudo make check
+sudo make install
+cd src && cc -shared bcm2835.o -o libbcm2835.so
+cp libbcm2835.so ~/pi_piper/lib/pi_piper
+
 ## License
 
 Copyright (c) 2013, [Jason Whitehorn](https://github.com/jwhitehorn)
