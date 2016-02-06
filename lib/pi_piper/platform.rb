@@ -10,7 +10,10 @@ module PiPiper
         require 'pi_piper/bcm2835'
         PiPiper::Bcm2835.init
         @@driver = PiPiper::Bcm2835
-        at_exit { Bcm2835.close }
+        at_exit { 
+          PiPiper::Bcm2835.release_pins
+          PiPiper::Bcm2835.close 
+        }
       end
       @@driver
     end
