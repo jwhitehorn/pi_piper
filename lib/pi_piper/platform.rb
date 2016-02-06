@@ -10,7 +10,10 @@ module PiPiper
         require 'pi_piper/bcm2835'
         PiPiper::Bcm2835.init
         @@driver = PiPiper::Bcm2835
-        at_exit { Bcm2835.close }
+        at_exit do
+          Bcm2835.release_pins
+          Bcm2835.close
+        end
       end
       @@driver
     end
@@ -18,7 +21,5 @@ module PiPiper
     def self.driver=(instance)
       @@driver = instance
     end
-
   end
-
 end
