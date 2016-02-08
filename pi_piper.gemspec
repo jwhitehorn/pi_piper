@@ -1,15 +1,18 @@
-# -*- encoding: utf-8 -*-
+# coding: utf-8
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'pi_piper/version'
 
 Gem::Specification.new do |s|
   s.name = "pi_piper"
-  s.version = "2.0.beta.11"
+  s.version = PiPiper::VERSION
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jason Whitehorn"]
   s.date = "2013-09-14"
   s.description = "Event driven Raspberry Pi GPIO library"
   s.email = "jason.whitehorn@gmail.com"
-  s.extra_rdoc_files = ["README.md", "lib/pi_piper.rb", "lib/pi_piper/bcm2835.rb", "lib/pi_piper/frequency.rb", "lib/pi_piper/i2c.rb", "lib/pi_piper/libbcm2835.img", "lib/pi_piper/pin.rb", "lib/pi_piper/platform.rb", "lib/pi_piper/spi.rb"]
+  s.extra_rdoc_files = ["README.md", "lib/pi_piper.rb", "lib/pi_piper/bcm2835.rb", "lib/pi_piper/frequency.rb", "lib/pi_piper/i2c.rb", "lib/pi_piper/libbcm2835.so", "lib/pi_piper/pin.rb", "lib/pi_piper/platform.rb", "lib/pi_piper/spi.rb"]
   s.files         = `git ls-files -z`.split("\x0")
   s.test_files    = s.files.grep(%r{^(test|spec|features)/})
   s.homepage = "http://github.com/jwhitehorn/pi_piper"
