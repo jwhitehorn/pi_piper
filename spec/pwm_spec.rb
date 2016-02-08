@@ -8,16 +8,14 @@ describe 'Pwm' do
     end
   end
   
-  describe 'new' do
+  describe '#new' do
     it 'should get the options right' do
-      default_pwm =  PiPiper::Pwm.new pin: 18
-      expect(default_pwm.options).to eq({:mode=>:balanced, :clock=>19200000.0, :range=>1024})
-      expect(default_pwm.pin).to eq(18)
+      default_pwm =  PiPiper::Pwm.new(pin: 18)
+      expect(default_pwm.options).to eq({ pin: 18, mode: :balanced, clock: 19200000.0, range: 1024 })
       expect(default_pwm.value).to eq(0)
 
-      custom_pwm =  PiPiper::Pwm.new pin: 18, mode: :markspace, clock: 1.megahertz, range: 10000, value: 1
-      expect(custom_pwm.options).to eq({mode: :markspace, clock: 1000000.0, range: 10000})
-      expect(custom_pwm.pin).to eq(18)
+      custom_pwm =  PiPiper::Pwm.new(pin: 18, mode: :markspace, clock: 1.megahertz, range: 10000, value: 1)
+      expect(custom_pwm.options).to eq({ pin: 18, mode: :markspace, clock: 1000000.0, range: 10000 })
       expect(custom_pwm.value).to eq(1)
     end
 
@@ -41,38 +39,47 @@ describe 'Pwm' do
   end
 
   let!(:pwm) { PiPiper::Pwm.new pin: 18 }
-
-  it 'on' do
-    expect(Platform.driver).to receive(:pwm_mode).twice.with(0, 0, 1)
-    pwm.on
-    pwm.start
-  end
-
-  it 'off' do
-    expect(Platform.driver).to receive(:pwm_mode).twice.with(0, 0, 0)
-    pwm.off
-    pwm.stop
-  end
   
-  it 'on? / off?' do
-    pwm.on
-    expect(pwm.on?).to be true
-    expect(pwm.off?).to be false
-    pwm.off
-    expect(pwm.on?).to be false
-    expect(pwm.off?).to be true
+  describe 'start/stop & status' do
+    it '#on' do
+      expect(Platform.driver).to receive(:pwm_mode).twice.with(0, 0, 1)
+      pwm.on
+      pwm.start
+    end
+
+    it '#off' do
+      expect(Platform.driver).to receive(:pwm_mode).twice.with(0, 0, 0)
+      pwm.off
+      pwm.stop
+    end
+    
+    it '#on?' do
+      pwm.on
+      expect(pwm.on?).to be true
+      pwm.off
+      expect(pwm.on?).to be false
+    end
+
+    it '#off?' do
+      pwm.on
+      expect(pwm.off?).to be false
+      pwm.off
+      expect(pwm.off?).to be true
+    end
   end
 
-  it 'should set value between 0 and 1' do
-    expect(Platform.driver).to receive(:pwm_data).with(0, (0.4*1024).to_i)
-    pwm.value = 0.4
-    expect(pwm.value).to eq 0.4
-  end
-  it 'should set caped value outside 0 and 1' do
-    pwm.value = 2
-    expect(pwm.value).to eq 1
-    pwm.value = -2
-    expect(pwm.value).to eq 0
-    
+  describe '#value=' do
+    it 'should set value between 0 and 1' do
+      expect(Platform.driver).to receive(:pwm_data).with(0, (0.4*1024).to_i)
+      pwm.value = 0.4
+      expect(pwm.value).to eq 0.4
+    end
+
+    it 'should set caped value outside 0 and 1' do
+      pwm.value = 2
+      expect(pwm.value).to eq 1
+      pwm.value = -2
+      expect(pwm.value).to eq 0
+    end
   end
 end

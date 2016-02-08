@@ -19,7 +19,7 @@ module PiPiper
       @logger = opts[:logger]
 
       @pins = {}
-      # @pwm = {}
+
       @spi = {data:[], chip_select:0,}
 
       self
@@ -104,10 +104,6 @@ module PiPiper
 
       def pin(pin_number)
         @pins[pin_number] || (@pins[pin_number] = {})
-      end
-
-      def pwm(channel)
-        @pwm[channel] || (@pwm[channel] = {})
       end
 
     ## The following methods are only for testing and are not available on any platforms
