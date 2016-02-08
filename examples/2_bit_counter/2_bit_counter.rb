@@ -10,13 +10,12 @@ pin27.off
 sum = 0
 
 PiPiper.watch :pin => 22, :trigger => :rising do |pin|
-  sum = sum + 1
-  display = sum % 4
+  sum += 1
   puts sum 
 
-  pin17.update_value(display == 2 || display == 3)
-  pin27.update_value(display == 1 || display == 3)
+  # get single bits of sum
+  pin17.update_value(sum & 0b01 == 0b01) 
+  pin27.update_value(sum & 0b10 == 0b10)
 end
 
 PiPiper.wait
-
