@@ -100,7 +100,6 @@ describe StubDriver do
     end
   end
 
-
   describe '#reset' do
     it 'should not reset unless asked' do
       StubDriver.new()
@@ -111,4 +110,31 @@ describe StubDriver do
     end
   end
 
+  describe '#release_pins' do
+    before(:each) do
+      StubDriver.new
+      StubDriver.pin_input(4)
+      StubDriver.pin_output(6)
+    end
+
+    it 'should keep track of open pins and release them' do
+      expect(@driver).to receive(:release_pin).with(4)
+      expect(@driver).to receive(:release_pin).with(6)
+
+      StubDriver.release_pins
+    end
+
+    it 'should remove released pins' do
+      StubDriver.release_pins
+
+      expect(StubDriver.pin_direction(4)).to be_nil
+      expect(StubDriver.pin_direction(6)).to be_nil
+    end
+
+    it 'should keep track of released pins' do
+      StubDriver.release_pins
+      expect(@driver).not_to receive(:release_pin)
+      StubDriver.release_pins
+    end
+  end
 end

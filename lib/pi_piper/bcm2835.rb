@@ -5,7 +5,8 @@ module PiPiper
   # It serves as an FFI library for PiPiper::SPI & PiPiper::I2C.
   module Bcm2835
     extend FFI::Library
-    ffi_lib File.dirname(__FILE__) + '/libbcm2835.img'
+    ffi_lib File.dirname(__FILE__) + '/libbcm2835.so'
+    @pins = []
 
     SPI_MODE0 = 0
     SPI_MODE1 = 1
@@ -27,22 +28,22 @@ module PiPiper
     # attach_function :gpio_level,           :bcm2835_gpio_lev,     [:uint8], :uint8
 
     #pin support...
-    attach_function :pin_set_pud,         :bcm2835_gpio_set_pud,     [:uint8, :uint8], :void
+    attach_function :pin_set_pud, :bcm2835_gpio_set_pud, [:uint8, :uint8], :void
     
     def self.pin_input(pin)
-      File.open("/sys/class/gpio/export", "w") { |f| f.write("#{pin}") }
-      File.open("/sys/class/gpio/gpio#{pin}/direction", "w") { |f| f.write("in") }
+      export(pin)
+      pin_direction(pin, 'in')
     end
-    
+
     def self.pin_set(pin, value)
       File.open("/sys/class/gpio/gpio#{pin}/value", 'w') {|f| f.write("#{value}") }
     end
-    
+
     def self.pin_output(pin)
-      File.open("/sys/class/gpio/export", "w") { |f| f.write("#{pin}") }
-      File.open("/sys/class/gpio/gpio#{pin}/direction", "w") { |f| f.write("out") }
+      export(pin)
+      pin_direction(pin, 'out')
     end
-    
+
     def self.pin_read(pin)
       File.read("/sys/class/gpio/gpio#{pin}/value").to_i
     end
@@ -52,6 +53,27 @@ module PiPiper
     attach_function :pwm_mode,      :bcm2835_pwm_set_mode,   [:uint8, :uint8, :uint8], :void
     attach_function :pwm_range,     :bcm2835_pwm_set_range,  [:uint8, :uint32], :void
     attach_function :pwm_data,      :bcm2835_pwm_set_data,   [:uint8, :uint32], :void
+
+    def self.pin_direction(pin, direction)
+      File.open("/sys/class/gpio/gpio#{pin}/direction", 'w') do |f|
+        f.write(direction)
+      end
+    end
+
+    # Exports pin and subsequently locks it from outside access
+    def self.export(pin)
+      File.open('/sys/class/gpio/export', 'w') { |f| f.write("#{pin}") }
+      @pins << pin unless @pins.include?(pin)
+    end
+
+    def self.release_pin(pin)
+      File.open('/sys/class/gpio/unexport', 'w') { |f| f.write("#{pin}") }
+      @pins.delete(pin)
+    end
+
+    def self.release_pins
+      @pins.dup.each { |pin| release_pin(pin) }
+    end
 
     #NOTE to use: chmod 666 /dev/spidev0.0
     def self.spidev_out(array)
@@ -82,11 +104,11 @@ module PiPiper
       [100.kilohertz,
        399.3610.kilohertz,
        1.666.megahertz,
-       1.689.megahertz]      
+       1.689.megahertz]
     end
 
     def self.spi_transfer_bytes(data)
-      data_out = FFI::MemoryPointer.new(data.count) 
+      data_out = FFI::MemoryPointer.new(data.count)
       data_in = FFI::MemoryPointer.new(data.count)
       (0..data.count-1).each { |i| data_out.put_uint8(i, data[i]) }
 
@@ -108,6 +130,5 @@ module PiPiper
 
       (0..bytes-1).map { |i| data_in.get_uint8(i) } 
     end
-
   end
 end

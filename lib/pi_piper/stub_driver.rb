@@ -31,11 +31,13 @@ module PiPiper
     end
 
     def pin_input(pin_number)
+      #@pins[pin_number] = { direction: :in }
       pin(pin_number)[:direction] = :in
       @logger.debug("Pin ##{pin_number} -> Input")
     end
 
     def pin_output(pin_number)
+      #@pins[pin_number] = { direction: :in }
       pin(pin_number)[:direction] = :out
       @logger.debug("Pin ##{pin_number} -> Output")
     end
@@ -96,20 +98,27 @@ module PiPiper
               end
     end
 
+    def release_pins
+      @pins.keys.each { |pin_number| release_pin(pin_number) }
+    end
+
+    def release_pin(pin_number)
+      @pins.delete(pin_number)
+    end
+
     def method_missing(meth, *args, &block)
       puts "Needs Implementation: StubDriver##{meth}"
     end
 
     private
 
-      def pin(pin_number)
-        @pins[pin_number] || (@pins[pin_number] = {})
-      end
+    def pin(pin_number)
+      @pins[pin_number] ||= {}
+    end
 
     ## The following methods are only for testing and are not available on any platforms
-      def spi_data
-        @spi[:data]
-      end
-
+    def spi_data
+      @spi[:data]
+    end   
   end
 end
