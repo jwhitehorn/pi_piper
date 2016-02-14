@@ -114,6 +114,7 @@ sudo make check
 sudo make install
 cd src && cc -shared bcm2835.o -o libbcm2835.so
 cp libbcm2835.so ~/pi_piper/lib/pi_piper
+```
 
 ## License
 
