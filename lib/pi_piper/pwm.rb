@@ -21,8 +21,13 @@ module PiPiper
         :value => 0
       }.merge(options)
 
-      raise ArgumentError, ":pin should be one of  #{PWM_PIN.keys} not #{@options[:pin]}" unless PWM_PIN[@options[:pin]]
-      raise ArgumentError, ":mode should be one of #{PWM_MODE}, not #{@options[:mode]}" unless PWM_MODE.include? @options[:mode]
+      unless PWM_PIN[@options[:pin]]
+        raise ArgumentError, ":pin should be one of  #{PWM_PIN.keys} not #{@options[:pin]}"
+      end
+
+      unless PWM_MODE.include? @options[:mode]
+        raise ArgumentError, ":mode should be one of #{PWM_MODE}, not #{@options[:mode]}"
+      end
 
       self.value= @options.delete(:value)
       self.pin=   @options[:pin]
