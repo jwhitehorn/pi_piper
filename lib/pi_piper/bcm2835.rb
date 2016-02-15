@@ -20,6 +20,12 @@ module PiPiper
 
     attach_function :init, :bcm2835_init, [], :uint8
     attach_function :close, :bcm2835_close, [], :uint8
+    
+    # Sets the Function Select register for the given pin, which configures the pin as Input, Output or one of the 6 alternate functions.
+    attach_function :gpio_select_function, :bcm2835_gpio_fsel,    [:uint8, :uint8], :void
+    # attach_function :gpio_set,             :bcm2835_gpio_set,     [:uint8], :void
+    # attach_function :gpio_clear,           :bcm2835_gpio_clr,     [:uint8], :void
+    # attach_function :gpio_level,           :bcm2835_gpio_lev,     [:uint8], :uint8
 
     #pin support...
     attach_function :pin_set_pud, :bcm2835_gpio_set_pud, [:uint8, :uint8], :void
@@ -41,6 +47,12 @@ module PiPiper
     def self.pin_read(pin)
       File.read("/sys/class/gpio/gpio#{pin}/value").to_i
     end
+
+    #PWM support...
+    attach_function :pwm_clock,     :bcm2835_pwm_set_clock,  [:uint32], :void
+    attach_function :pwm_mode,      :bcm2835_pwm_set_mode,   [:uint8, :uint8, :uint8], :void
+    attach_function :pwm_range,     :bcm2835_pwm_set_range,  [:uint8, :uint32], :void
+    attach_function :pwm_data,      :bcm2835_pwm_set_data,   [:uint8, :uint32], :void
 
     def self.pin_direction(pin, direction)
       File.open("/sys/class/gpio/gpio#{pin}/direction", 'w') do |f|
