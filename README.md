@@ -51,7 +51,7 @@ You can set resistors when creating a pin passing a :pull parameter
 pin = PiPiper::Pin.new(:pin => 17, :direction => :in, :pull => :up)
 ```
 
-This way, the pin will always return 'on' if it is unconnected or of the
+This way, the pin will always return 'on' if it is unconnected or if the
 sensor has an open collector output.
 
 You can later alter the pulling resistors using PiPiper#pull!
