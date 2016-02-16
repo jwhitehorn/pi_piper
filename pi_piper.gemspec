@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project = "pi_piper"
   s.rubygems_version = "2.0.0"
   s.summary = "Event driven Raspberry Pi GPIO library"
+  s.licenses = ['BSD']
 
   if s.respond_to? :specification_version
     s.specification_version = 4
