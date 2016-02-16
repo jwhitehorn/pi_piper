@@ -1,4 +1,4 @@
-Copyright (c) 2013-2016,  Jason Whitehorn and contributors
+Copyright (c) 2013-2016,  Jason Whitehorn, Zshawn Syed and contributors
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
