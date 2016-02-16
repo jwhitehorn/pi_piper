@@ -39,13 +39,11 @@ module PiPiper
       @pull      = options[:pull]
       @released  = false
 
-      raise "Invalid pull mode. Options are :up, :down or :float (default)" unless 
+      raise PiPiper::PinError, "Invalid pull mode. Options are :up, :down or :float (default)" unless 
         [:up, :down, :float, :off].include? @pull
-      raise "Unable to use pull-ups : pin direction must be ':in' for this" if 
-        @direction != :in and [:up, :down].include?(@pull)
-      raise "Invalid direction. Options are :in or :out" unless 
+      raise PiPiper::PinError, "Invalid direction. Options are :in or :out" unless 
         [:in, :out].include? @direction
-      raise "Invalid trigger. Options are :rising, :falling, or :both" unless 
+      raise PiPiper::PinError, "Invalid trigger. Options are :rising, :falling, or :both" unless 
         [:rising, :falling, :both].include? @trigger
 
       if @direction == :out
@@ -61,7 +59,7 @@ module PiPiper
     # If the pin has been initialized for output this method will set the 
     # logic level high.
     def on
-      fail PiPiper::PinError, "Pin #{@pin} already released" if released?
+      raise PiPiper::PinError, "Pin #{@pin} already released" if released?
       Platform.driver.pin_set(pin, GPIO_HIGH) if direction == :out
     end
 
@@ -73,7 +71,7 @@ module PiPiper
     # If the pin has been initialized for output this method will set 
     # the logic level low.
     def off
-      fail PiPiper::PinError, "Pin #{@pin} already released" if released?
+      raise PiPiper::PinError, "Pin #{@pin} already released" if released?
       Platform.driver.pin_set(pin, GPIO_LOW) if direction == :out
     end
 
@@ -105,8 +103,9 @@ module PiPiper
     # @param [Symbol] state Indicates if and how pull mode must be set when 
     # pin direction is set to :in. Either :up, :down or :offing. Defaults to :off.
     def pull!(state)
-      return nil if @direction != :in
-      fail PiPiper::PinError, "Pin #{@pin} already released" if released?
+     raise PiPiper::PinError, "Unable to use pull-ups : pin direction must be ':in' for this" if 
+        @direction != :in and [:up, :down].include?(state)
+      raise PiPiper::PinError, "Pin #{@pin} already released" if released?
       @pull = case state
               when :up then GPIO_PUD_UP
               when :down then GPIO_PUD_DOWN
@@ -157,7 +156,7 @@ module PiPiper
     # In short, you must call this method if you are curious about the 
     # current state of the pin.
     def read
-      fail PiPiper::PinError, "Pin #{@pin} already released" if released?
+      raise PiPiper::PinError, "Pin #{@pin} already released" if released?
       @last_value = @value
       val = Platform.driver.pin_read(@pin)
       @value = invert ? (val ^ 1) : val
