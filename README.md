@@ -51,7 +51,7 @@ You can set resistors when creating a pin passing a :pull parameter
 pin = PiPiper::Pin.new(:pin => 17, :direction => :in, :pull => :up)
 ```
 
-This way, the pin will always return 'on' if it is unconnected or of the
+This way, the pin will always return 'on' if it is unconnected or if the
 sensor has an open collector output.
 
 You can later alter the pulling resistors using PiPiper#pull!
@@ -84,6 +84,24 @@ distro][adafruit-linux] you can also write to the spi using `PiPiper::Spi.spidev
 PiPiper::Spi.spidev_out([255,0,0,0,255,0,0,0,255])
 ```
 [adafruit-linux]:http://learn.adafruit.com/adafruit-raspberry-pi-educational-linux-distro/overview
+
+### Pulse Width Modulation (PWM)
+
+what is it !? https://en.wikipedia.org/wiki/Pulse-width_modulation
+
+PiPiper allow to use the hardware PWM channel of the bcm2835.....
+value should be between 0 and 1, clock between 0 and 19.2MHz, mode blaanced or markspace and range something greater than 0.
+Supported pin are : 12, 13, 18, 19, 40, 41, 45, 52, 53
+but only 18 is on the header..
+
+```ruby
+pwm = PiPiper::Pwm.new pin: 18 #, range: 1024, clock: 19.2.megahertz, mode: :markspace, value: 1, start: false
+pwm.value= 0.5
+pwm.off # works with stop
+pwm.on  # aliased start
+```
+
+apparently the clock is rounded to the next 2^n divider of 19.2MHz
 
 ## Documentation
 
