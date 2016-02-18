@@ -3,10 +3,8 @@ include PiPiper
 
 describe 'Pin' do
 
-  around(:example) do |example|
-     Platform.driver = StubDriver.new.tap do |d|
-        example.run
-     end
+  before(:example) do |example|
+    Platform.driver = StubDriver.new
   end
 
   context 'Basic Behaviour' do

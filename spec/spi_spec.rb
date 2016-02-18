@@ -2,10 +2,8 @@ require_relative 'spec_helper'
 
 describe 'Spi' do
 
-  around(:example) do |example|
-    Platform.driver = StubDriver.new.tap do |d|
-        example.run
-     end
+  before(:example) do |example|
+    Platform.driver = StubDriver.new
   end
 
   describe 'when in block' do

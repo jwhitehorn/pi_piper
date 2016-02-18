@@ -2,10 +2,8 @@ require_relative 'spec_helper'
 
 describe 'I2C' do
 
-  around(:example) do |example|
-    Platform.driver = StubDriver.new.tap do |d|
-        example.run
-     end
+  before(:example) do |example|
+    Platform.driver = StubDriver.new
   end
   
   describe 'clock setting' do

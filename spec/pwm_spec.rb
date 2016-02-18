@@ -2,10 +2,8 @@ require 'spec_helper'
 include PiPiper
 
 describe 'Pwm' do
-  around(:example) do |example|
-    Platform.driver = StubDriver.new.tap do |d|
-        example.run
-    end
+  before(:example) do |example|
+    Platform.driver = StubDriver.new
   end
   
   describe '#new' do
