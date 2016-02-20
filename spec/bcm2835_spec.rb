@@ -15,19 +15,19 @@ describe 'Bcm2835' do
     let(:file_like_object) { double("file like object") }
 
     before :example do
-      allow(File).to receive(:open).and_return(file_like_object)
       allow(File).to receive(:read).and_return("1")
+      allow(File).to receive(:write).and_return("1")
     end
 
     it '#export' do
-      expect(File).to receive(:open).with("/sys/class/gpio/export", "w")
+      expect(File).to receive(:write).with("/sys/class/gpio/export", 4)
       expect(Bcm2835.exported_pins.include?(4)).not_to be true
       Bcm2835.export(4)
       expect(Bcm2835.exported_pins.include?(4)).to be true
     end
 
     it '#unexport_pin' do
-      expect(File).to receive(:open).with("/sys/class/gpio/unexport", "w")
+      expect(File).to receive(:write).with("/sys/class/gpio/unexport", 4)
 
       Bcm2835.export(4)
       expect(Bcm2835.exported_pins.include?(4)).to be true
@@ -69,7 +69,7 @@ describe 'Bcm2835' do
 
     it '#pin_direction' do
       Bcm2835.export(5)
-      expect(File).to receive(:open).with("/sys/class/gpio/gpio5/direction", "w")
+      expect(File).to receive(:write).with("/sys/class/gpio/gpio5/direction", "in")
       Bcm2835.pin_direction(5, 'in')
     end
     
@@ -87,7 +87,7 @@ describe 'Bcm2835' do
 
     it '#pin_set' do
       Bcm2835.export(5)
-      expect(File).to receive(:open).with("/sys/class/gpio/gpio5/value", "w")
+      expect(File).to receive(:write).with("/sys/class/gpio/gpio5/value", 1)
       Bcm2835.pin_set(5, 1)
     end
 

@@ -37,7 +37,8 @@ module PiPiper
 
     def self.pin_set(pin, value)
       raise PiPiper::PinError, "Pin #{pin} not exported" unless self.exported?(pin)
-      File.open("/sys/class/gpio/gpio#{pin}/value", 'w') {|f| f.write("#{value}") }
+      # File.open("/sys/class/gpio/gpio#{pin}/value", 'w') {|f| f.write("#{value}") }
+      File.write("/sys/class/gpio/gpio#{pin}/value", value)
     end
 
     def self.pin_output(pin)
@@ -58,18 +59,16 @@ module PiPiper
 
     def self.pin_direction(pin, direction)
       raise PiPiper::PinError, "Pin #{pin} not exported" unless self.exported?(pin)
-      File.open("/sys/class/gpio/gpio#{pin}/direction", 'w') do |f|
-        f.write(direction)
-      end
+      File.write("/sys/class/gpio/gpio#{pin}/direction", direction)
     end
 
     def self.export(pin)
-      File.open('/sys/class/gpio/export', 'w') { |f| f.write("#{pin}") }
+      File.write('/sys/class/gpio/export', pin)
       @pins << pin unless @pins.include?(pin)
     end
 
     def self.unexport_pin(pin)
-      File.open('/sys/class/gpio/unexport', 'w') { |f| f.write("#{pin}") }
+      File.write('/sys/class/gpio/unexport', pin)
       @pins.delete(pin)
     end
 
