@@ -9,7 +9,7 @@ To get started:
 
 If you do not already have Ruby installed, first you'll need to:
 
-    sudo apt-get install ruby ruby1.9.1-dev
+    sudo apt-get install ruby ruby1.9.1-dev libssl-dev
 
 Despite one of the packages being titled "ruby1.9.1-dev", the above command will install Ruby 1.9.3 (as of January 2013) and the Ruby dev tools.
 
