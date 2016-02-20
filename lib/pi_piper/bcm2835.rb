@@ -36,6 +36,7 @@ module PiPiper
     end
 
     def self.pin_set(pin, value)
+      raise PiPiper::PinError, "Pin #{pin} not exported" unless self.exported?(pin)
       File.open("/sys/class/gpio/gpio#{pin}/value", 'w') {|f| f.write("#{value}") }
     end
 
@@ -45,6 +46,7 @@ module PiPiper
     end
 
     def self.pin_read(pin)
+      raise PiPiper::PinError, "Pin #{pin} not exported" unless self.exported?(pin)
       File.read("/sys/class/gpio/gpio#{pin}/value").to_i
     end
 
@@ -55,24 +57,32 @@ module PiPiper
     attach_function :pwm_data,      :bcm2835_pwm_set_data,   [:uint8, :uint32], :void
 
     def self.pin_direction(pin, direction)
+      raise PiPiper::PinError, "Pin #{pin} not exported" unless self.exported?(pin)
       File.open("/sys/class/gpio/gpio#{pin}/direction", 'w') do |f|
         f.write(direction)
       end
     end
 
-    # Exports pin and subsequently locks it from outside access
     def self.export(pin)
       File.open('/sys/class/gpio/export', 'w') { |f| f.write("#{pin}") }
       @pins << pin unless @pins.include?(pin)
     end
 
-    def self.release_pin(pin)
+    def self.unexport_pin(pin)
       File.open('/sys/class/gpio/unexport', 'w') { |f| f.write("#{pin}") }
       @pins.delete(pin)
     end
 
-    def self.release_pins
-      @pins.dup.each { |pin| release_pin(pin) }
+    def self.unexport_all
+      @pins.dup.each { |pin| unexport_pin(pin) }
+    end
+
+    def self.exported_pins
+      @pins
+    end
+
+    def self.exported?(pin)
+      @pins.include?(pin)
     end
 
     #NOTE to use: chmod 666 /dev/spidev0.0

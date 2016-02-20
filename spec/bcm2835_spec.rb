@@ -1,15 +1,78 @@
 require 'spec_helper'
-include PiPiper
+
 
 describe 'Bcm2835' do
+  
+  before :context do
+    Platform.driver
+  end
+  
+  after :context do
+    Bcm2835.exported_pins.delete_if { true }
+  end
+
+  # describe  'GPIO' do
     let(:file_like_object) { double("file like object") }
 
-    before(:example) do
-      Platform.driver
+    before :example do
       allow(File).to receive(:open).and_return(file_like_object)
       allow(File).to receive(:read).and_return("1")
     end
 
+    it '#export' do
+      expect(File).to receive(:open).with("/sys/class/gpio/export", "w")
+      expect(Bcm2835.exported_pins.include?(4)).not_to be true
+      Bcm2835.export(4)
+      expect(Bcm2835.exported_pins.include?(4)).to be true
+    end
+
+    it '#unexport_pin' do
+      expect(File).to receive(:open).with("/sys/class/gpio/unexport", "w")
+
+      Bcm2835.export(4)
+      expect(Bcm2835.exported_pins.include?(4)).to be true
+      Bcm2835.unexport_pin(4)
+      expect(Bcm2835.exported_pins.include?(4)).not_to be true
+    end
+    
+    it '#unexport_all' do
+      Bcm2835.export(4)
+      Bcm2835.export(18)
+      Bcm2835.export(27)
+      expect(Bcm2835.exported_pins).to eq [4,18,27]
+      Bcm2835.unexport_all
+      expect(Bcm2835.exported_pins).to eq []
+    end
+
+    it '#exported?' do
+      Bcm2835.export(4)
+      expect(Bcm2835.exported?(4)).to be true
+      expect(Bcm2835.exported?(112)).to be false
+    end
+
+
+    xit '#unexport_all>at_exit' do
+      pending 'Not yet very sure how to test that_exit hook !?'
+      Bcm2835.export(18)
+      Bcm2835.export(4)
+    
+      at_exit {
+        expect(Bcm2835.exported_pins).to eq []
+      }
+    end
+  # end
+
+  # describe 'GPIO' do
+    # before(:all) do
+    #   Bcm2835.export(5)
+    # end
+
+    it '#pin_direction' do
+      Bcm2835.export(5)
+      expect(File).to receive(:open).with("/sys/class/gpio/gpio5/direction", "w")
+      Bcm2835.pin_direction(5, 'in')
+    end
+    
     it '#pin_input' do
       expect(Bcm2835).to receive(:export).with(4)
       expect(Bcm2835).to receive(:pin_direction).with(4, 'in')
@@ -23,46 +86,36 @@ describe 'Bcm2835' do
     end
 
     it '#pin_set' do
-      expect(File).to receive(:open).with("/sys/class/gpio/gpio4/value", "w")
-      Bcm2835.pin_set(4, 1)
+      Bcm2835.export(5)
+      expect(File).to receive(:open).with("/sys/class/gpio/gpio5/value", "w")
+      Bcm2835.pin_set(5, 1)
     end
 
     it '#pin_read' do
-      expect(File).to receive(:read).with("/sys/class/gpio/gpio4/value")
-      Bcm2835.pin_read(4)
-    end
-    
-    it '#pin_direction' do
-      expect(File).to receive(:open).with("/sys/class/gpio/gpio4/direction", "w")
-      Bcm2835.pin_direction(4, 'in')
+      Bcm2835.export(5)
+      expect(File).to receive(:read).with("/sys/class/gpio/gpio5/value")
+      Bcm2835.pin_read(5)
     end
 
-    it '#export' do
-      expect(File).to receive(:open).with("/sys/class/gpio/export", "w")
-      Bcm2835.export(4)
+    it '#unexport_pin stop RW access to pin' do
+       Bcm2835.unexport_pin(4)
+      expect { Bcm2835.pin_read(4) }.to         raise_error(PinError)
+      expect { Bcm2835.pin_set(4, 1) }.to       raise_error(PinError)
+      expect { Bcm2835.pin_direction(4, 1) }.to raise_error(PinError)
     end
 
-    it '#release_pin' do
-      expect(File).to receive(:open).with("/sys/class/gpio/unexport", "w")
-      Bcm2835.release_pin(4)
-    end
-    
-    it 'release_pins' do
-    end
-    
-    xit 'spidev_out(array)' do
-    end
-    
-    xit 'i2c_allowed_clocks' do
-    end
-    
-    xit 'spi_transfer_bytes(data)' do
-    end
-    
-    xit 'i2c_transfer_bytes(data)' do
-    end
+    xit 'edge files trigerring'
+  # end
 
-    xit 'i2c_read_bytes(bytes'do
-    end
+  xdescribe 'SPI' do
+    it 'spidev_out(array)'
+  end
+  
+  xdescribe 'I2C' do
+    it 'i2c_allowed_clocks'
+    it 'spi_transfer_bytes(data)'
+    it 'i2c_transfer_bytes(data)'
+    it 'i2c_read_bytes(bytes)'
+  end
 end
 

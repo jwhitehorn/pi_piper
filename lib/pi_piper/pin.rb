@@ -37,7 +37,6 @@ module PiPiper
       @invert    = options[:invert]
       @trigger   = options[:trigger]
       @pull      = options[:pull]
-      @released  = false
 
       raise PiPiper::PinError, "Invalid pull mode. Options are :up, :down or :float (default)" unless 
         [:up, :down, :float, :off].include? @pull
@@ -59,7 +58,6 @@ module PiPiper
     # If the pin has been initialized for output this method will set the 
     # logic level high.
     def on
-      raise PiPiper::PinError, "Pin #{@pin} already released" if released?
       Platform.driver.pin_set(pin, GPIO_HIGH) if direction == :out
     end
 
@@ -71,7 +69,6 @@ module PiPiper
     # If the pin has been initialized for output this method will set 
     # the logic level low.
     def off
-      raise PiPiper::PinError, "Pin #{@pin} already released" if released?
       Platform.driver.pin_set(pin, GPIO_LOW) if direction == :out
     end
 
@@ -105,7 +102,6 @@ module PiPiper
     def pull!(state)
      raise PiPiper::PinError, "Unable to use pull-ups : pin direction must be ':in' for this" if 
         @direction != :in and [:up, :down].include?(state)
-      raise PiPiper::PinError, "Pin #{@pin} already released" if released?
       @pull = case state
               when :up then GPIO_PUD_UP
               when :down then GPIO_PUD_DOWN
@@ -156,22 +152,15 @@ module PiPiper
     # In short, you must call this method if you are curious about the 
     # current state of the pin.
     def read
-      raise PiPiper::PinError, "Pin #{@pin} already released" if released?
       @last_value = @value
       val = Platform.driver.pin_read(@pin)
       @value = invert ? (val ^ 1) : val
     end
 
-    def release
-      Platform.driver.release_pin(@pin)
-      @released = true
+  private
+    def method_missing(method, *args, &block)
+      Platform.driver.send(method, @pin, *args, &block)
     end
-
-    def released?
-      @released == true
-    end
-
-    private
 
     def value_file
       "/sys/class/gpio/gpio#{pin}/value"

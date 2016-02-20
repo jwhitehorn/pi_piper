@@ -89,35 +89,6 @@ describe 'Pin' do
     end
   end
 
-  context 'After it has been released' do
-    it 'should actually release it' do
-      pending 'Should not be tested in Pin but in the driver where it should be implemented'
-      expect(Platform.driver).to receive(:release_pin).with(4)
-   
-      pin = Pin.new(pin: 4, direction: :in)
-      pin.release
-      expect(pin.released?).to be(true)
-    end
-
-    it 'should not mark unreleased pins as released' do
-      pin = Pin.new(pin: 4, direction: :in)
-      expect(pin.released?).to be(false)
-    end
-
-    it 'should not continue to use the pin' do
-      expect(Platform.driver).to receive(:release_pin).with(4)
-
-      pin = Pin.new(pin: 4, direction: :in)
-      pin.release
-
-      expect { pin.read }.to raise_error(PinError, 'Pin 4 already released')
-      expect { pin.on }.to raise_error(PinError, 'Pin 4 already released')
-      expect { pin.off }.to raise_error(PinError, 'Pin 4 already released')
-      expect { pin.pull!(:up) }.to(
-        raise_error(PinError, 'Pin 4 already released'))
-    end
-  end
-
   describe 'Pull up/down/float' do
     let!(:pin_up) do
       Pin.new(pin: 17, direction: :in, pull: :up)
@@ -164,21 +135,5 @@ describe 'Pin' do
       pin_off.pull!(:down)
       pin_off.pull!(:off)
     end
-
-
-    describe 'when pull mode is set to up' do
-      it 'must respond HIGH when floating pins are checked' do
-        pending 'Should not be tested in Pin but in the driver'
-        # expect(pin_up.on?).to be(true)
-      end
-    end
-
-    describe 'when pull mode is set to down' do
-      it 'must respond LOW when floating pins are checked' do
-        pending 'Should not be tested in Pin but in the driver'
-        # expect(pin_down.off?).to be(true)
-      end
-    end
-
   end
 end
