@@ -30,7 +30,7 @@ module PiPiper
       options = { :direction => :in,
                   :invert => false,
                   :trigger => :both,
-                  :pull => :off}.merge(options)
+                  :pull => :off }.merge(options)
 
       @pin       = options[:pin]
       @direction = options[:direction]
@@ -39,14 +39,19 @@ module PiPiper
       @pull      = options[:pull]
       @released  = false
 
-      raise "Invalid pull mode. Options are :up, :down or :float (default)" unless 
-        [:up, :down, :float, :off].include? @pull
-      raise "Unable to use pull-ups : pin direction must be ':in' for this" if 
-        @direction != :in and [:up, :down].include?(@pull)
-      raise "Invalid direction. Options are :in or :out" unless 
-        [:in, :out].include? @direction
-      raise "Invalid trigger. Options are :rising, :falling, or :both" unless 
-        [:rising, :falling, :both].include? @trigger
+      raise ArgumentError, 'Pin # required' unless @pin
+      unless valid_pull?
+        raise 'Invalid pull mode. Options are :up, :down or :float (default)'
+      end
+      unless valid_direction?
+        raise 'Invalid direction. Options are :in or :out'
+      end
+      if @direction != :in && [:up, :down].include?(@pull)
+        raise 'Unable to use pull-ups : pin direction must be :in for this'
+      end
+      unless valid_trigger?
+        raise 'Invalid trigger. Options are :rising, :falling, or :both'
+      end
 
       if @direction == :out
         Platform.driver.pin_output(@pin)
@@ -173,6 +178,18 @@ module PiPiper
     end
 
     private
+
+    def valid_trigger?
+      [:rising, :falling, :both].include?(@trigger)
+    end
+
+    def valid_direction?
+      [:in, :out].include?(@direction)
+    end
+
+    def valid_pull?
+      [:up, :down, :float, :off].include? @pull
+    end
 
     def value_file
       "/sys/class/gpio/gpio#{pin}/value"

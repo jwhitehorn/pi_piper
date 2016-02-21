@@ -2,6 +2,12 @@ require 'spec_helper'
 include PiPiper
 
 describe 'Pin' do
+  describe '#initialize' do
+    it 'should make sure pin is sent in' do
+      expect { Pin.new({}) }.to raise_error(ArgumentError, 'Pin # required')
+    end
+  end
+
   it 'should export pin for input' do
     Platform.driver = StubDriver.new.tap do |d|
       expect(d).to receive(:pin_input).with(4)
