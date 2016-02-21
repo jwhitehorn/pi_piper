@@ -84,8 +84,9 @@ describe 'Pin' do
     end
 
     it 'should wait for change' do
-      pending 'how could we test event triggered code ?!'
-      fail
+      expect(Platform.driver).to receive(:pin_wait_for).with(4, :both)
+      pin = Pin.new pin: 4, direction: :out, edge: :rising
+      pin.wait_for_change
     end
   end
 

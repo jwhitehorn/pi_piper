@@ -17,6 +17,7 @@ describe 'Bcm2835' do
     before :example do
       allow(File).to receive(:read).and_return("1")
       allow(File).to receive(:write).and_return("1")
+      allow(File).to receive(:open).and_return(file_like_object)
     end
 
     it '#export' do
@@ -98,13 +99,23 @@ describe 'Bcm2835' do
     end
 
     it '#unexport_pin stop RW access to pin' do
-       Bcm2835.unexport_pin(4)
+      Bcm2835.unexport_pin(4)
       expect { Bcm2835.pin_read(4) }.to         raise_error(PinError)
       expect { Bcm2835.pin_set(4, 1) }.to       raise_error(PinError)
       expect { Bcm2835.pin_direction(4, 1) }.to raise_error(PinError)
     end
 
-    xit 'edge files trigerring'
+    it 'pin_set_edge' do
+      Bcm2835.export(5)
+      expect(File).to receive(:write).with("/sys/class/gpio/gpio5/edge", :both)
+      Bcm2835.pin_set_edge(5, :both)
+    end
+
+    it 'pin_wait_for' do
+      pending 'how could we test edge trigger ?!'
+      fail
+    end
+
   # end
 
   xdescribe 'SPI' do

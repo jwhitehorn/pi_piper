@@ -37,7 +37,6 @@ module PiPiper
 
     def self.pin_set(pin, value)
       raise PiPiper::PinError, "Pin #{pin} not exported" unless self.exported?(pin)
-      # File.open("/sys/class/gpio/gpio#{pin}/value", 'w') {|f| f.write("#{value}") }
       File.write("/sys/class/gpio/gpio#{pin}/value", value)
     end
 
@@ -82,6 +81,30 @@ module PiPiper
 
     def self.exported?(pin)
       @pins.include?(pin)
+    end
+
+    # Support "none", "rising", "falling", or "both"
+    def self.pin_set_edge(pin, trigger)
+      raise PiPiper::PinError, "Pin #{pin} not exported" unless self.exported?(pin)
+      File.write("/sys/class/gpio/gpio#{pin}/edge", trigger)
+    end
+
+    def self.pin_wait_for(pin, trigger)
+      pin_set_edge(pin, trigger)
+
+      fd = File.open("/sys/class/gpio/gpio#{pin}/value", "r")
+      value = nil
+      loop do
+        fd.read
+        IO.select(nil, nil, [fd], nil)
+        last_value = value
+        value = self.pin_read(pin)
+        if last_value != value
+          next if trigger == :rising and value == 0
+          next if trigger == :falling and value == 1
+          break
+        end
+      end
     end
 
     #NOTE to use: chmod 666 /dev/spidev0.0
