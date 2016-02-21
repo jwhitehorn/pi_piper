@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    pi_piper (2.0.beta.11)
+    pi_piper (1.9.9)
       eventmachine (= 1.0.9)
       ffi
 
@@ -58,7 +58,7 @@ DEPENDENCIES
   mocha
   pi_piper!
   rake
-  rspec
+  rspec (~> 3.0)
   simplecov
 
 BUNDLED WITH
