@@ -11,21 +11,19 @@ Gem::Specification.new do |s|
   s.authors = ['Jason Whitehorn']
   s.description = 'Event driven Raspberry Pi GPIO library'
   s.email = 'jason.whitehorn@gmail.com'
-  s.extra_rdoc_files = ['README.md', 'lib/pi_piper.rb', 'lib/pi_piper/bcm2835.rb', 'lib/pi_piper/frequency.rb', 'lib/pi_piper/i2c.rb', 'lib/pi_piper/libbcm2835.so', 'lib/pi_piper/pin.rb', 'lib/pi_piper/platform.rb', 'lib/pi_piper/spi.rb']
+  s.extra_rdoc_files = ['README.md', 'lib/pi_piper/libbcm2835.so']
   s.files         = `git ls-files -z`.split("\x0")
-  s.test_files    = s.files.grep(%r{^(test|spec|features)/})
   s.homepage = 'http://github.com/jwhitehorn/pi_piper'
   s.rdoc_options = ['--line-numbers', '--inline-source', '--title', 'Pi_piper', '--main', 'README.md']
   s.require_paths = ['lib']
-  s.rubyforge_project = 'pi_piper'
   s.rubygems_version = '2.2.2'
   s.summary = 'Event driven Raspberry Pi GPIO library'
   s.licenses = ['BSD']
 
   s.specification_version = 4 if s.respond_to? :specification_version
 
-  s.add_runtime_dependency('ffi', ['>= 0'])
-  s.add_runtime_dependency('eventmachine', ['= 1.0.9'])
+  s.add_runtime_dependency 'ffi', '>= 0'
+  s.add_runtime_dependency 'eventmachine', '= 1.0.9'
   s.add_development_dependency 'rspec', '~> 3.0'
   s.add_development_dependency 'mocha'
   s.add_development_dependency 'simplecov'
