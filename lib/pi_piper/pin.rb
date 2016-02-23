@@ -30,7 +30,7 @@ module PiPiper
       options = { :direction => :in,
                   :invert => false,
                   :trigger => :both,
-                  :pull => :off}.merge(options)
+                  :pull => :off }.merge(options)
 
       @pin       = options[:pin]
       @direction = options[:direction]
@@ -38,12 +38,19 @@ module PiPiper
       @trigger   = options[:trigger]
       @pull      = options[:pull]
 
-      raise PiPiper::PinError, "Invalid pull mode. Options are :up, :down or :float (default)" unless 
-        [:up, :down, :float, :off].include? @pull
-      raise PiPiper::PinError, "Invalid direction. Options are :in or :out" unless 
-        [:in, :out].include? @direction
-      raise PiPiper::PinError, "Invalid trigger. Options are :rising, :falling, or :both" unless 
-        [:rising, :falling, :both].include? @trigger
+      raise ArgumentError, 'Pin # required' unless @pin
+      unless valid_pull?
+        raise PiPiper::PinError, 'Invalid pull mode. Options are :up, :down or :float (default)'
+      end
+      unless valid_direction?
+        raise PiPiper::PinError, 'Invalid direction. Options are :in or :out'
+      end
+      if @direction != :in && [:up, :down].include?(@pull)
+        raise PiPiper::PinError, 'Unable to use pull-ups : pin direction must be :in for this'
+      end
+      unless valid_trigger?
+        raise PiPiper::PinError, 'Invalid trigger. Options are :rising, :falling, or :both'
+      end
 
       if @direction == :out
         Platform.driver.pin_output(@pin)
@@ -149,6 +156,18 @@ module PiPiper
   private
     def method_missing(method, *args, &block)
       Platform.driver.send(method, @pin, *args, &block)
+		end
+		
+    def valid_trigger?
+      [:rising, :falling, :both].include?(@trigger)
+    end
+
+    def valid_direction?
+      [:in, :out].include?(@direction)
+    end
+
+    def valid_pull?
+      [:up, :down, :float, :off].include? @pull
     end
   end
 end
