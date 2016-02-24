@@ -36,7 +36,7 @@ module PiPiper
     end
 
     def self.pin_set(pin, value)
-      raise PiPiper::PinError, "Pin #{pin} not exported" unless self.exported?(pin)
+      raise PiPiper::PinError, "Pin #{pin} not exported" unless exported?(pin)
       File.write("/sys/class/gpio/gpio#{pin}/value", value)
     end
 
@@ -46,7 +46,7 @@ module PiPiper
     end
 
     def self.pin_read(pin)
-      raise PiPiper::PinError, "Pin #{pin} not exported" unless self.exported?(pin)
+      raise PiPiper::PinError, "Pin #{pin} not exported" unless exported?(pin)
       File.read("/sys/class/gpio/gpio#{pin}/value").to_i
     end
 
@@ -57,7 +57,7 @@ module PiPiper
     attach_function :pwm_data,      :bcm2835_pwm_set_data,   [:uint8, :uint32], :void
 
     def self.pin_direction(pin, direction)
-      raise PiPiper::PinError, "Pin #{pin} not exported" unless self.exported?(pin)
+      raise PiPiper::PinError, "Pin #{pin} not exported" unless exported?(pin)
       File.write("/sys/class/gpio/gpio#{pin}/direction", direction)
     end
 
@@ -85,7 +85,7 @@ module PiPiper
 
     # Support "none", "rising", "falling", or "both"
     def self.pin_set_edge(pin, trigger)
-      raise PiPiper::PinError, "Pin #{pin} not exported" unless self.exported?(pin)
+      raise PiPiper::PinError, "Pin #{pin} not exported" unless exported?(pin)
       File.write("/sys/class/gpio/gpio#{pin}/edge", trigger)
     end
 

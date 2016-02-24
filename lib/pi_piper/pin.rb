@@ -148,8 +148,8 @@ module PiPiper
     # In short, you must call this method if you are curious about the 
     # current state of the pin.
     def read
-      @last_value = @value
       val = Platform.driver.pin_read(@pin)
+      @last_value = @value
       @value = invert ? (val ^ 1) : val
     end
 
