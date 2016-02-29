@@ -36,7 +36,8 @@ module PiPiper
     end
 
     def self.pin_set(pin, value)
-      File.open("/sys/class/gpio/gpio#{pin}/value", 'w') {|f| f.write("#{value}") }
+      raise PiPiper::PinError, "Pin #{pin} not exported" unless exported?(pin)
+      File.write("/sys/class/gpio/gpio#{pin}/value", value)
     end
 
     def self.pin_output(pin)
@@ -45,6 +46,7 @@ module PiPiper
     end
 
     def self.pin_read(pin)
+      raise PiPiper::PinError, "Pin #{pin} not exported" unless exported?(pin)
       File.read("/sys/class/gpio/gpio#{pin}/value").to_i
     end
 
@@ -55,24 +57,54 @@ module PiPiper
     attach_function :pwm_data,      :bcm2835_pwm_set_data,   [:uint8, :uint32], :void
 
     def self.pin_direction(pin, direction)
-      File.open("/sys/class/gpio/gpio#{pin}/direction", 'w') do |f|
-        f.write(direction)
-      end
+      raise PiPiper::PinError, "Pin #{pin} not exported" unless exported?(pin)
+      File.write("/sys/class/gpio/gpio#{pin}/direction", direction)
     end
 
-    # Exports pin and subsequently locks it from outside access
     def self.export(pin)
-      File.open('/sys/class/gpio/export', 'w') { |f| f.write("#{pin}") }
+      File.write('/sys/class/gpio/export', pin)
       @pins << pin unless @pins.include?(pin)
     end
 
-    def self.release_pin(pin)
-      File.open('/sys/class/gpio/unexport', 'w') { |f| f.write("#{pin}") }
+    def self.unexport_pin(pin)
+      File.write('/sys/class/gpio/unexport', pin)
       @pins.delete(pin)
     end
 
-    def self.release_pins
-      @pins.dup.each { |pin| release_pin(pin) }
+    def self.unexport_all
+      @pins.dup.each { |pin| unexport_pin(pin) }
+    end
+
+    def self.exported_pins
+      @pins
+    end
+
+    def self.exported?(pin)
+      @pins.include?(pin)
+    end
+
+    # Support "none", "rising", "falling", or "both"
+    def self.pin_set_edge(pin, trigger)
+      raise PiPiper::PinError, "Pin #{pin} not exported" unless exported?(pin)
+      File.write("/sys/class/gpio/gpio#{pin}/edge", trigger)
+    end
+
+    def self.pin_wait_for(pin, trigger)
+      pin_set_edge(pin, trigger)
+
+      fd = File.open("/sys/class/gpio/gpio#{pin}/value", "r")
+      value = nil
+      loop do
+        fd.read
+        IO.select(nil, nil, [fd], nil)
+        last_value = value
+        value = self.pin_read(pin)
+        if last_value != value
+          next if trigger == :rising and value == 0
+          next if trigger == :falling and value == 1
+          break
+        end
+      end
     end
 
     #NOTE to use: chmod 666 /dev/spidev0.0
