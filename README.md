@@ -9,7 +9,7 @@ To get started:
 
 If you do not already have Ruby installed, first you'll need to:
 
-    sudo apt-get install ruby ruby1.9.1-dev
+    sudo apt-get install ruby ruby1.9.1-dev libssl-dev
 
 Despite one of the packages being titled "ruby1.9.1-dev", the above command will install Ruby 1.9.3 (as of January 2013) and the Ruby dev tools.
 
@@ -51,7 +51,7 @@ You can set resistors when creating a pin passing a :pull parameter
 pin = PiPiper::Pin.new(:pin => 17, :direction => :in, :pull => :up)
 ```
 
-This way, the pin will always return 'on' if it is unconnected or of the
+This way, the pin will always return 'on' if it is unconnected or if the
 sensor has an open collector output.
 
 You can later alter the pulling resistors using PiPiper#pull!
@@ -85,6 +85,24 @@ PiPiper::Spi.spidev_out([255,0,0,0,255,0,0,0,255])
 ```
 [adafruit-linux]:http://learn.adafruit.com/adafruit-raspberry-pi-educational-linux-distro/overview
 
+### Pulse Width Modulation (PWM)
+
+what is it !? https://en.wikipedia.org/wiki/Pulse-width_modulation
+
+PiPiper allow to use the hardware PWM channel of the bcm2835.....
+value should be between 0 and 1, clock between 0 and 19.2MHz, mode blaanced or markspace and range something greater than 0.
+Supported pin are : 12, 13, 18, 19, 40, 41, 45, 52, 53
+but only 18 is on the header..
+
+```ruby
+pwm = PiPiper::Pwm.new pin: 18 #, range: 1024, clock: 19.2.megahertz, mode: :markspace, value: 1, start: false
+pwm.value= 0.5
+pwm.off # works with stop
+pwm.on  # aliased start
+```
+
+apparently the clock is rounded to the next 2^n divider of 19.2MHz
+
 ## Documentation
 
 API documentation for Pi Piper can be found at [rdoc.info](http://rdoc.info/github/jwhitehorn/pi_piper/frames/).
@@ -100,7 +118,7 @@ Looking for more examples/sample code for Pi Piper? Then check out the following
 
 ## Under the hood
 
-PiPiper use the libbcm2835 library from Mike McCauley at airspayce.
+PiPiper use the libbcm2835 library from Mike McCauley at airspayce. (distributed with Open Source Licensing GPL V2)
 
 http://www.airspayce.com/mikem/bcm2835/index.html
 
@@ -114,20 +132,11 @@ sudo make check
 sudo make install
 cd src && cc -shared bcm2835.o -o libbcm2835.so
 cp libbcm2835.so ~/pi_piper/lib/pi_piper
+```
 
 ## License
 
-Copyright (c) 2013, [Jason Whitehorn](https://github.com/jwhitehorn)
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-* Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-
+Distributed in accordance with the BSD licence, see LICENCE.md file.
 
 ***
 <img src="http://www.raspberrypi.org/wp-content/uploads/2012/03/Raspi_Colour_R.png" width="90" />

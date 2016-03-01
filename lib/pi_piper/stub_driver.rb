@@ -19,11 +19,16 @@ module PiPiper
       @logger = opts[:logger]
 
       @pins = {}
+
       @spi = {data:[], chip_select:0,}
 
       self
     end
     alias_method :reset, :new
+
+
+    def gpio_select_function(pin_number, alt_fun)
+    end
 
     def pin_input(pin_number)
       #@pins[pin_number] = { direction: :in }
@@ -49,6 +54,18 @@ module PiPiper
     def pin_set_pud(pin_number, value)
       pin(pin_number)[:pud] = value
       @logger.debug("PinPUD ##{pin_number} -> #{value}")
+    end
+
+    def pwm_clock(clock_divider)
+    end
+
+    def pwm_mode(channel, mode, start)
+    end
+
+    def pwm_range(channel, range)
+    end
+
+    def pwm_data(channel, data)
     end
 
     def spidev_out(array)

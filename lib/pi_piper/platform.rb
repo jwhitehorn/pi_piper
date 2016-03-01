@@ -11,7 +11,7 @@ module PiPiper
         PiPiper::Bcm2835.init
         @@driver = PiPiper::Bcm2835
         at_exit do
-          Bcm2835.release_pins
+          Bcm2835.unexport_all
           Bcm2835.close
         end
       end
