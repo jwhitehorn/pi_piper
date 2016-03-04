@@ -27,12 +27,12 @@ module PiPiper
       mode = SPI_MODE1 if cpol == 0 and cpha == 1
       mode = SPI_MODE2 if cpol == 1 and cpha == 0
       mode = SPI_MODE3 if cpol == 1 and cpha == 1
-      Platform.driver.spi_set_data_mode mode
+      PiPiper.driver.spi_set_data_mode mode
     end
 
     #Begin an SPI block. All SPI communications should be wrapped in a block.
     def self.begin(chip=nil, &block)
-      Platform.driver.spi_begin
+      PiPiper.driver.spi_begin
       chip = CHIP_SELECT_0 if !chip && block_given?
       spi = new(chip)
 
@@ -45,7 +45,7 @@ module PiPiper
 
     # Not needed when #begin is called with a block
     def self.end
-      Platform.driver.spi_end
+      PiPiper.driver.spi_end
     end
 
     # Uses /dev/spidev0.0 to write to the SPI
@@ -57,7 +57,7 @@ module PiPiper
     #   PiPiper::Spi.spidev_out([255,0,0,0,255,0,0,0,255])
     #
     def self.spidev_out(array)
-      Platform.driver.spidev_out(array)
+      PiPiper.driver.spidev_out(array)
     end
 
     # Sets the SPI clock frequency
@@ -77,7 +77,7 @@ module PiPiper
                  20000000 => 16      #20 MHz
                }
       divider = options[frequency]
-      Platform.driver.spi_clock(divider)
+      PiPiper.driver.spi_clock(divider)
     end
 
     def bit_order(order=MSBFIRST)
@@ -89,7 +89,7 @@ module PiPiper
         end
       end
 
-      Platform.driver.spi_bit_order(order)
+      PiPiper.driver.spi_bit_order(order)
     end
 
     # Activate a specific chip so that communication can begin
@@ -112,12 +112,12 @@ module PiPiper
     # @param [optional, CHIP_SELECT_*] chip the chip select line options
     def chip_select(chip=CHIP_SELECT_0)
       chip = @chip if @chip
-      Platform.driver.spi_chip_select(chip) 
+      PiPiper.driver.spi_chip_select(chip) 
       if block_given?
         begin
           yield
         ensure
-          Platform.driver.spi_chip_select(CHIP_SELECT_NONE)
+          PiPiper.driver.spi_chip_select(CHIP_SELECT_NONE)
         end
       end
     end
@@ -136,7 +136,7 @@ module PiPiper
       chip = @chip if @chip
       chip = CHIP_SELECT_0 unless chip
 
-      Platform.driver.spi_chip_select_polarity(chip, active_low ? 0 : 1)
+      PiPiper.driver.spi_chip_select_polarity(chip, active_low ? 0 : 1)
     end
 
     # Read from the bus
@@ -156,7 +156,7 @@ module PiPiper
       if count
         write([0xFF] * count)
       else
-        enable { Platform.driver.spi_transfer(0) }
+        enable { PiPiper.driver.spi_transfer(0) }
       end
     end
 
@@ -182,9 +182,9 @@ module PiPiper
       enable do
         case data
         when Numeric
-          Platform.driver.spi_transfer(data)
+          PiPiper.driver.spi_transfer(data)
         when Enumerable
-          Platform.driver.spi_transfer_bytes(data)
+          PiPiper.driver.spi_transfer_bytes(data)
         else
           raise ArgumentError.new("#{data.class} is not valid data. Use Numeric or an Enumerable of numbers")
         end

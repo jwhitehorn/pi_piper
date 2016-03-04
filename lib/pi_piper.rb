@@ -1,8 +1,32 @@
 require 'eventmachine'
-Dir[File.dirname(__FILE__) + '/pi_piper/*.rb'].each {|file| require file unless file.end_with?('bcm2835.rb') }
+
+require 'pi_piper/version'
+require 'pi_piper/frequency'
+require 'pi_piper/driver'
+require 'pi_piper/i2c'
+require 'pi_piper/pin'
+require 'pi_piper/spi'
+require 'pi_piper/pwm'
 
 module PiPiper
+  class PinError < StandardError; end
+  
   extend self
+
+  def driver=(klass) 
+    if !klass.nil? && (PiPiper::Driver == klass.superclass || PiPiper::Driver == klass)
+      @driver.close if @driver
+      @driver = klass.new
+    else
+      raise 'Supply a PiPiper::Driver subclass for driver'
+    end
+  end
+
+  def driver
+    @driver ||= PiPiper::Driver.new
+  end
+
+  at_exit { driver.close }
   
   #Defines an event block to be executed when an pin event occurs.
   #
