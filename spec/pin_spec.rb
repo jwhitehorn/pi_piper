@@ -1,140 +1,119 @@
 require 'spec_helper'
-include PiPiper
 
-describe 'Pin' do
+describe PiPiper::Pin do
 
-  before(:example) do |example|
-    Platform.driver = StubDriver.new
+  before(:context) do
+    PiPiper.driver = PiPiper::Driver
   end
 
-  context 'Basic Behaviour' do
-    it 'should export pin for input' do    
-      expect(Platform.driver).to receive(:pin_input).with(4)
-      Pin.new pin: 4, direction: :in
+  context 'when instantiate' do
+    it 'should set pin for input' do    
+      expect(PiPiper.driver).to receive(:pin_direction).with(4, :in)
+      PiPiper::Pin.new pin: 4, direction: :in
     end
 
-    it 'should export pin for output' do
-      expect(Platform.driver).to receive(:pin_output).with(4)
-      Pin.new pin: 4, direction: :out
+    it 'should set pin for output' do
+      expect(PiPiper.driver).to receive(:pin_direction).with(4, :out)
+      PiPiper::Pin.new pin: 4, direction: :out
     end
 
     it 'should read start value on construction' do
-      expect(Platform.driver).to receive(:pin_read).with(4).and_return(0)
-      Pin.new pin: 4, direction: :in
+      expect(PiPiper.driver).to receive(:pin_read).with(4).and_return(0)
+      PiPiper::Pin.new pin: 4, direction: :in
     end
 
+    it 'should accept pulls when direction is :in' do
+      expect(PiPiper.driver).to receive(:pin_set_pud).with(17, :up)
+      expect(PiPiper.driver).to receive(:pin_set_pud).with(18, :down)
+      expect(PiPiper.driver).to receive(:pin_set_pud).with(19, :off)
+      expect(PiPiper.driver).to receive(:pin_set_pud).with(20, :float)
+
+      PiPiper::Pin.new(pin: 17, direction: :in, pull: :up)
+      PiPiper::Pin.new(pin: 18, direction: :in, pull: :down)
+      PiPiper::Pin.new(pin: 19, direction: :in, pull: :off)
+      PiPiper::Pin.new(pin: 20, direction: :in, pull: :float)
+    end
+
+    it 'should not accept pulls when direction is :out' do
+      expect{ PiPiper::Pin.new(pin: 17, direction: :out, pull: :up) }.to raise_error ArgumentError
+      expect{ PiPiper::Pin.new(pin: 17, direction: :out, pull: :down) }.to raise_error ArgumentError
+      expect{ PiPiper::Pin.new(pin: 17, direction: :out, pull: :off) }.not_to raise_error
+    end
+
+    it 'should accept trigger' do
+      expect(PiPiper.driver).to receive(:pin_set_trigger).with(17, :any_trigger)
+      expect(PiPiper.driver).to receive(:pin_set_trigger).with(18, :none)
+      PiPiper::Pin.new(pin: 17, direction: :in, trigger: :any_trigger)
+      PiPiper::Pin.new(pin: 18, direction: :in)
+    end
+  end
+
+
+  context 'when direction is in' do
+    subject { PiPiper::Pin.new pin: 4, direction: :in }
+
     it 'should detect on?' do
-      expect(Platform.driver).to receive(:pin_read).with(4).and_return(1)
-      pin = Pin.new pin: 4, direction: :in
-      expect(pin.on?).to be(true)
+      expect(PiPiper.driver).to receive(:pin_read).with(4).and_return(1)
+      expect(subject.on?).to be(true)
     end
 
     it 'should detect off?' do
-      expect(Platform.driver).to receive(:pin_read).with(4).and_return(0)
-      pin = Pin.new pin: 4, direction: :in
-      expect(pin.off?).to be(true)
-    end
-
-    it 'should invert true' do
-      expect(Platform.driver).to receive(:pin_read).with(4).and_return(1)
-      pin = Pin.new pin: 4, direction: :in, invert: true
-      expect(pin.on?).to be(false)
-    end
-
-    it 'should invert true' do
-      expect(Platform.driver).to receive(:pin_read).with(4).and_return(0)
-      pin = Pin.new pin: 4, direction: :in, invert: true
-      expect(pin.off?).to be(false)
-    end
-
-    it 'should write high' do
-      expect(Platform.driver).to receive(:pin_set).with(4, 1)
-      pin = Pin.new pin: 4, direction: :out
-      pin.on
-    end
-
-    it 'should write low' do
-      expect(Platform.driver).to receive(:pin_set).with(4, 0)
-      pin = Pin.new pin: 4, direction: :out
-      pin.off
+      expect(PiPiper.driver).to receive(:pin_read).with(4).and_return(0)
+      expect(subject.off?).to be(true)
     end
 
     it 'should not write high on direction in' do
-      expect(Platform.driver).not_to receive(:pin_set)
-      pin = Pin.new pin: 4, direction: :in
-      pin.on
+      expect(PiPiper.driver).not_to receive(:pin_write)
+      subject.on
     end
 
     it 'should not write low on direction in' do
-      expect(Platform.driver).not_to receive(:pin_set)
-      pin = Pin.new pin: 4, direction: :in
-      pin.off
+      expect(PiPiper.driver).not_to receive(:pin_write)
+      subject.off
     end
 
     it 'should detect high to low change' do
       value = 1
-      # begins low, then high, low, high, low...
-      allow(Platform.driver).to receive(:pin_read) { value ^= 1 }
+      allow(PiPiper.driver).to receive(:pin_read) { value ^= 1 } # begins low, then high, low, high, low...
 
-      pin = Pin.new pin: 4, direction: :in
-      expect(pin.off?).to be(true)
-      pin.read
-      expect(pin.off?).to be(false)
-      expect(pin.changed?).to be(true)
+      expect(subject.off?).to be(true)
+      subject.read
+      expect(subject.off?).to be(false)
+      expect(subject.changed?).to be(true)
     end
 
-    it 'should wait for change' do
-      expect(Platform.driver).to receive(:pin_wait_for).with(4, :both)
-      pin = Pin.new pin: 4, direction: :out, edge: :rising
-      pin.wait_for_change
+    context 'when invert is true' do
+      subject { PiPiper::Pin.new pin: 4, direction: :in, invert: true }
+      
+      it 'should invert true' do
+        expect(PiPiper.driver).to receive(:pin_read).with(4).and_return(1)
+        expect(subject.on?).to be(false)
+      end
+
+      it 'should invert true' do
+        expect(PiPiper.driver).to receive(:pin_read).with(4).and_return(0)
+        expect(subject.off?).to be(false)
+      end
     end
   end
 
-  describe 'Pull up/down/float' do
-    let!(:pin_up) do
-      Pin.new(pin: 17, direction: :in, pull: :up)
-    end
-    let!(:pin_down) do
-      Pin.new(pin: 17, direction: :in, pull: :down)
-    end
-    let!(:pin_off) do
-      Pin.new(pin: 17, direction: :in, pull: :off)
-    end
-    let!(:pin_float) do
-      Pin.new(pin: 17, direction: :in, pull: :float)
+  context 'when direction is out' do
+    subject { PiPiper::Pin.new pin: 4, direction: :out }
+
+    it 'should write high' do
+      expect(PiPiper.driver).to receive(:pin_write).with(4, 1)
+      subject.on
     end
 
-    it 'should raise an error for invalid :pull values' do
-      expect { Pin.new(pin: 17, direction: :in, pull: :wth) }.to raise_error PinError
+    it 'should write low' do
+      expect(PiPiper.driver).to receive(:pin_write).with(4, 0)
+      subject.off
     end
+  end
 
-    it 'should restrict allowed :pull values' do
-      expect(pin_up.pull?).to eq(:up)
-      expect(pin_down.pull?).to eq(:down)
-      expect(pin_off.pull?).to eq(:off)
-      expect(pin_float.pull?).to eq(:off)
-    end
-
-    it 'should not accept pulls when direction is :out' do
-      expect{ Pin.new(pin: 17, direction: :out, pull: :up) }.to raise_error PinError
-      expect{ Pin.new(pin: 17, direction: :out, pull: :down) }.to raise_error PinError
-      expect{ Pin.new(pin: 17, direction: :out, pull: :off) }.not_to raise_error
-    end
-
-    it 'should not allow pull! when direction is :out' do
-      p_out = Pin.new(pin: 17, direction: :out)
-      expect{ p_out.pull!(:up) }.to raise_error PinError
-      expect{ p_out.pull!(:down) }.to raise_error PinError
-      expect{ p_out.pull!(:off) }.not_to raise_error
-    end
-
-    it 'should allow subsequent pull resistor changes when direction is :in' do
-      expect(Platform.driver).to receive(:pin_set_pud).with(17, PinValues::GPIO_PUD_UP)
-      expect(Platform.driver).to receive(:pin_set_pud).with(17, PinValues::GPIO_PUD_DOWN)
-      expect(Platform.driver).to receive(:pin_set_pud).with(17, PinValues::GPIO_PUD_OFF)
-      pin_off.pull!(:up)
-      pin_off.pull!(:down)
-      pin_off.pull!(:off)
-    end
+  it 'should wait for change' do
+    expect(PiPiper.driver).to receive(:pin_wait_for).with(4)
+    pin = PiPiper::Pin.new pin: 4, direction: :in, trigger: :rising
+    pin.wait_for_change
   end
 end
