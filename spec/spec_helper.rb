@@ -1,6 +1,7 @@
 require 'simplecov'
 SimpleCov.start
-require 'pi_piper.rb'
+
+require 'pi_piper'
 require 'rspec'
 require 'mocha/api'
 
