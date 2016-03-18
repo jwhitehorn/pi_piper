@@ -1,11 +1,10 @@
-require_relative 'pin_values'
-
 module PiPiper
   # Represents a GPIO pin on the Raspberry Pi
   class Pin
-    include PiPiper::PinValues
+    GPIO_HIGH = 1
+    GPIO_LOW  = 0
 
-    attr_reader :pin, :last_value, :direction, :invert
+    attr_reader :pin, :last_value, :options
 
     #Initializes a new GPIO pin.
     #
@@ -27,47 +26,28 @@ module PiPiper
     # Defaults to :off.
     #
     def initialize(options)
-      options = { :direction => :in,
+      @options = {:direction => :in,
                   :invert => false,
-                  :trigger => :both,
-                  :pull => :off }.merge(options)
+                  :trigger => :none,
+                  :pull => :off,
+                }.merge(options)
 
-      @pin       = options[:pin]
-      @direction = options[:direction]
-      @invert    = options[:invert]
-      @trigger   = options[:trigger]
-      @pull      = options[:pull]
-      @released  = false
+      raise ArgumentError, 'Pin # required' unless @options[:pin]
 
-      raise ArgumentError, 'Pin # required' unless @pin
-      unless valid_pull?
-        raise 'Invalid pull mode. Options are :up, :down or :float (default)'
-      end
-      unless valid_direction?
-        raise 'Invalid direction. Options are :in or :out'
-      end
-      if @direction != :in && [:up, :down].include?(@pull)
-        raise 'Unable to use pull-ups : pin direction must be :in for this'
-      end
-      unless valid_trigger?
-        raise 'Invalid trigger. Options are :rising, :falling, or :both'
-      end
-
-      if @direction == :out
-        Platform.driver.pin_output(@pin)
+      PiPiper.driver.pin_direction(@options[:pin], @options[:direction])
+      PiPiper.driver.pin_set_trigger(@options[:pin], @options[:trigger])
+      if @options[:direction] == :out && @options[:pull] != :off
+        raise ArgumentError, 'Unable to use pull-ups : pin direction must be :in for this'
       else
-        Platform.driver.pin_input(@pin)
+        PiPiper.driver.pin_set_pud(@options[:pin], @options[:pull])
       end
-      pull!(@pull)
-
       read
     end
 
     # If the pin has been initialized for output this method will set the 
     # logic level high.
     def on
-      fail PiPiper::PinError, "Pin #{@pin} already released" if released?
-      Platform.driver.pin_set(pin, GPIO_HIGH) if direction == :out
+      PiPiper.driver.pin_write(@options[:pin], GPIO_HIGH) if @options[:direction] == :out
     end
 
     # Tests if the logic level is high.
@@ -78,8 +58,7 @@ module PiPiper
     # If the pin has been initialized for output this method will set 
     # the logic level low.
     def off
-      fail PiPiper::PinError, "Pin #{@pin} already released" if released?
-      Platform.driver.pin_set(pin, GPIO_LOW) if direction == :out
+      PiPiper.driver.pin_write(@options[:pin], GPIO_LOW) if @options[:direction] == :out
     end
 
     # Tests if the logic level is low.
@@ -99,41 +78,6 @@ module PiPiper
     end
     alias_method :value=, :update_value
 
-    # When the pin has been initialized in input mode, internal resistors can 
-    # be pulled up or down (respectively with :up and :down).
-    # 
-    # Pulling an input pin will prevent noise from triggering it when the input
-    # is floating.
-    # 
-    # For instance when nothing is plugged in, pulling the pin-up will make 
-    # subsequent value readings to return 'on' (or high, or 1...).
-    # @param [Symbol] state Indicates if and how pull mode must be set when 
-    # pin direction is set to :in. Either :up, :down or :offing. Defaults to :off.
-    def pull!(state)
-      return nil if @direction != :in
-      fail PiPiper::PinError, "Pin #{@pin} already released" if released?
-      @pull = case state
-              when :up then GPIO_PUD_UP
-              when :down then GPIO_PUD_DOWN
-              # :float and :off are just aliases
-              when :float, :off then GPIO_PUD_OFF
-              else nil
-              end
-
-      Platform.driver.pin_set_pud(@pin, @pull) if @pull
-      @pull
-    end
-
-    # If the pin direction is input, it will return the current state of 
-    # pull-up/pull-down resistor, either :up, :down or :off.
-    def pull?
-      case @pull
-      when GPIO_PUD_UP then :up
-      when GPIO_PUD_DOWN then :down
-      else :off
-      end
-    end
-
     # Tests if the logic level has changed since the pin was last read.
     def changed?
       last_value != value
@@ -142,65 +86,23 @@ module PiPiper
     # Blocks until a logic level change occurs. The initializer option 
     # `:trigger` modifies what edge this method will release on.
     def wait_for_change
-      fd = File.open(value_file, "r")
-      File.open(edge_file, "w") { |f| f.write("both") }
-      loop do
-        fd.read
-        IO.select(nil, nil, [fd], nil)
-        read
-        if changed?
-          next if @trigger == :rising and value == 0
-          next if @trigger == :falling and value == 1
-          break
-        end
-      end
+      PiPiper.driver.pin_wait_for(@options[:pin])
     end
-
+    
     # Reads the current value from the pin. Without calling this method 
     # first, `value`, `last_value` and `changed?` will not be updated.
     # 
     # In short, you must call this method if you are curious about the 
     # current state of the pin.
     def read
-      fail PiPiper::PinError, "Pin #{@pin} already released" if released?
+      val = PiPiper.driver.pin_read(@options[:pin])
       @last_value = @value
-      val = Platform.driver.pin_read(@pin)
-      @value = invert ? (val ^ 1) : val
+      @value = @options[:invert] ? (val ^ 1) : val
     end
 
-    def release
-      Platform.driver.release_pin(@pin)
-      @released = true
-    end
-
-    def released?
-      @released == true
-    end
-
-    private
-
-    def valid_trigger?
-      [:rising, :falling, :both].include?(@trigger)
-    end
-
-    def valid_direction?
-      [:in, :out].include?(@direction)
-    end
-
-    def valid_pull?
-      [:up, :down, :float, :off].include? @pull
-    end
-
-    def value_file
-      "/sys/class/gpio/gpio#{pin}/value"
-    end
-
-    def edge_file
-      "/sys/class/gpio/gpio#{pin}/edge"
-    end
-
-    def direction_file
-      "/sys/class/gpio/gpio#{pin}/direction"
+  private
+    def method_missing(method, *args, &block)
+      PiPiper.driver.send(method, @options[:pin], *args, &block)
     end
   end
 end
