@@ -23,7 +23,7 @@ module PiPiper
     # triggers. Defaults to :both.
     # 
     # @option options [Symbol] :pull Indicates if and how pull mode must be 
-    # set when pin direction is set to :in. Either :up, :down or :offing. 
+    # set when pin direction is set to :in. Either :up, :down or :off. 
     # Defaults to :off.
     #
     def initialize(options)
