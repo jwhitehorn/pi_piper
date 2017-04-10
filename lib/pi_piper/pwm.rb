@@ -66,14 +66,14 @@ module PiPiper
       Platform.driver.pwm_data(PWM_PIN[@options[:pin]][:channel], data(@value))
     end
 
+    def clock=(clock)
+      Platform.driver.pwm_clock(get_clock_divider(clock))
+    end
+    
     private
 
     def range=(range)
       Platform.driver.pwm_range(PWM_PIN[@options[:pin]][:channel], range)
-    end
-
-    def clock=(clock)
-      Platform.driver.pwm_clock(get_clock_divider(clock))
     end
 
     def pin=(bcm_pin_number)
