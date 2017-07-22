@@ -1,15 +1,13 @@
 PATH
   remote: .
   specs:
-    pi_piper (1.9.9)
-      eventmachine (= 1.0.9)
+    pi_piper (2.0.0)
       ffi
 
 GEM
   remote: https://rubygems.org/
   specs:
     diff-lcs (1.2.4)
-    eventmachine (1.0.9)
     ffi (1.9.0)
     metaclass (0.0.1)
     mocha (0.14.0)
@@ -38,7 +36,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  eventmachine (~> 1.0.9)
   ffi
   mocha
   pi_piper!
@@ -47,4 +44,4 @@ DEPENDENCIES
   simplecov
 
 BUNDLED WITH
-   1.11.2
+   1.14.6
