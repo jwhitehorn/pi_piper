@@ -23,7 +23,6 @@ Gem::Specification.new do |s|
   s.specification_version = 4 if s.respond_to? :specification_version
 
   s.add_runtime_dependency 'ffi', '>= 0'
-  s.add_runtime_dependency 'eventmachine', '= 1.0.9'
   s.add_development_dependency 'rspec', '~> 3.0'
   s.add_development_dependency 'mocha'
   s.add_development_dependency 'simplecov'
