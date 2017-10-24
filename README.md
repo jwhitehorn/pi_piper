@@ -44,7 +44,7 @@ When using pins as input, you can use internal resistors to pull the pin
 up or pull down. This is important if you use open-collector sensors
 which have floating output in some states.
 
-You can set resistors when creating a pin passing a :pull parameter
+You can set resistors when creating a pin by passing a :pull parameter
 (which can be :up, :down or :off, which is the default).
 
 ```ruby
@@ -87,12 +87,13 @@ PiPiper::Spi.spidev_out([255,0,0,0,255,0,0,0,255])
 
 ### Pulse Width Modulation (PWM)
 
-what is it !? https://en.wikipedia.org/wiki/Pulse-width_modulation
+What is it !? https://en.wikipedia.org/wiki/Pulse-width_modulation
 
-PiPiper allow to use the hardware PWM channel of the bcm2835.....
-value should be between 0 and 1, clock between 0 and 19.2MHz, mode blaanced or markspace and range something greater than 0.
-Supported pin are : 12, 13, 18, 19, 40, 41, 45, 52, 53
-but only 18 is on the header..
+PiPiper allows to use the hardware PWM channel of the bcm2835.
+
+Value should be between 0 and 1, clock between 0 and 19.2MHz, mode balanced or markspace and range something greater than 0.
+
+Supported bcm2835 pins are : 12, 13, 18, 19, 40, 41, 45, 52, 53 but only 18 is on the Rasperry Pi header.
 
 ```ruby
 pwm = PiPiper::Pwm.new pin: 18 #, range: 1024, clock: 19.2.megahertz, mode: :markspace, value: 1, start: false
@@ -101,7 +102,7 @@ pwm.off # works with stop
 pwm.on  # aliased start
 ```
 
-apparently the clock is rounded to the next 2^n divider of 19.2MHz
+Apparently the clock is rounded to the next 2^n divider of 19.2MHz.
 
 ## Documentation
 
@@ -118,11 +119,11 @@ Looking for more examples/sample code for Pi Piper? Then check out the following
 
 ## Under the hood
 
-PiPiper use the libbcm2835 library from Mike McCauley at airspayce. (distributed with Open Source Licensing GPL V2)
+PiPiper uses the libbcm2835 library from Mike McCauley at airspayce (distributed with Open Source Licensing GPL V2).
 
 http://www.airspayce.com/mikem/bcm2835/index.html
 
-if you want to upgrade or downgrade the library for compatibility reason, get it and make it a shared object library :
+if you want to upgrade or downgrade the library for compatibility reasons, get it and make it a shared object library:
 
 ```script
 wget http://www.airspayce.com/mikem/bcm2835/bcm2835-1.49.tar.gz
